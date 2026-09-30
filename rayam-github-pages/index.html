@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAYAM — Wealth & FIRE Operating System</title>
+<style>
+:root{
+  --bg:#f4f7ff; --surface:#fff; --surface2:#f8faff; --ink:#13203b; --muted:#6b7894;
+  --line:#e5eaf5; --blue:#315bea; --cyan:#16b9d9; --green:#16b979; --lime:#7bdc5b;
+  --pink:#ed4c9b; --orange:#ff9f43; --yellow:#f4c84d; --purple:#8d54e9; --red:#ef5364;
+  --navy:#14235a; --shadow:0 14px 36px rgba(42,66,125,.10); --radius:20px;
+}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit} button{cursor:pointer}
+.app{display:grid;grid-template-columns:252px 1fr;min-height:100vh}
+.sidebar{position:fixed;left:0;top:0;height:100vh;background:#fff;border-right:1px solid var(--line);padding:22px 15px;display:flex;flex-direction:column;z-index:10}
+.logo{display:flex;align-items:center;gap:10px;padding:4px 10px 22px}.logo-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#315bea,#7658ef);display:grid;place-items:center;color:#fff;font-weight:900;box-shadow:0 8px 18px #315bea33}.logo strong{font-size:20px;letter-spacing:.5px}.logo small{display:block;font-size:8px;color:var(--muted);margin-top:1px}
+.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;text-align:left;padding:12px 13px;border-radius:13px;color:#5d6984;display:flex;align-items:center;gap:12px;font-weight:650}.nav button:hover{background:#f2f5ff;color:var(--blue)}.nav button.active{color:#fff;background:linear-gradient(100deg,#315bea,#5279ff);box-shadow:0 9px 20px #315bea2c}.ico{width:20px;text-align:center}
+.sidebar-foot{margin-top:auto}.fire-mini{background:linear-gradient(145deg,#eef3ff,#fff1f7);border:1px solid #dfe6ff;border-radius:18px;padding:14px;margin-bottom:12px}.fire-mini .fire-progress{width:82px;height:82px;margin:4px auto 9px;display:grid;place-items:center}.fire-progress svg{display:block;width:100%;height:100%}.fire-progress .track{fill:none;stroke:#dce5f8;stroke-width:9}.fire-progress .value{fill:none;stroke:var(--green);stroke-width:9;stroke-linecap:round;stroke-dasharray:68 32;transform:rotate(-90deg);transform-origin:50% 50%}.fire-progress b{font-size:15px;color:var(--ink)}.fire-progress-label{font-size:10px}.fire-progress-large{width:90px;height:90px;flex:0 0 90px}.fire-progress-large .value{stroke-width:9}.switcher{display:flex;gap:6px}.switcher button{flex:1;border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px;font-size:11px;color:var(--muted)}
+.main{min-width:0;margin-left:252px;min-height:100vh}.topbar{height:72px;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:12px 24px;position:sticky;top:0;z-index:8}.search{flex:1;max-width:540px;background:#f6f8fd;border:1px solid #e2e7f2;border-radius:12px;padding:11px 14px;color:var(--muted)}.top-actions{margin-left:auto;display:flex;align-items:center;gap:10px}.pill{border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px 12px;color:#50607c;font-size:12px}.avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#315bea,#a54dea);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:800}
+.content{padding:22px 24px 90px;max-width:1550px;margin:auto;position:relative;z-index:1}.hero{border-radius:24px;min-height:158px;padding:25px 30px;color:#fff;position:relative;overflow:hidden;background:linear-gradient(110deg,#172a73 0%,#315bea 45%,#8d54e9 76%,#ed4c9b 100%);box-shadow:0 18px 42px #315bea25}.hero:before{content:"";position:absolute;inset:-40px 0 0 46%;background:radial-gradient(circle at 30% 45%,#fff5 0 2%,transparent 25%),radial-gradient(circle at 65% 25%,#ffbf7a55 0 3%,transparent 20%),linear-gradient(145deg,transparent,#1a235055);transform:skewX(-16deg)}.hero h1{font-size:27px;margin:0 0 7px;position:relative}.hero p{margin:0;opacity:.9;position:relative}.hero-side{position:absolute;right:28px;top:24px;text-align:right;max-width:280px}.hero-quote{font-weight:700;font-size:17px}.hero-date{font-size:11px;opacity:.75;margin-top:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px}.metric{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);position:relative;overflow:hidden}.metric:after{content:"";position:absolute;right:-24px;top:-24px;width:80px;height:80px;border-radius:50%;background:var(--tint,#eef3ff)}.metric-head{display:flex;align-items:center;gap:9px;color:#60708c;font-size:12px;font-weight:700}.metric-icon{width:31px;height:31px;border-radius:10px;display:grid;place-items:center;background:var(--tint,#eef3ff);color:var(--accent,var(--blue));font-size:16px}.metric h2{font-size:24px;margin:12px 0 4px;letter-spacing:-.5px}.delta{font-size:11px;font-weight:800}.up{color:var(--green)}.down{color:var(--red)}.spark{height:35px;margin-top:8px}.spark svg{width:100%;height:100%}
+.row{display:grid;gap:16px;margin-top:16px}.row-main{grid-template-columns:1.3fr 1fr .9fr}.row-wide{grid-template-columns:1.65fr 1fr}.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow);min-width:0}.card-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.card-title h3{font-size:15px;margin:0}.card-title span{font-size:11px;color:var(--blue);font-weight:800}.chart{height:260px;position:relative}.chart svg{width:100%;height:100%;overflow:visible}.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.legend span{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:5px}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.donut-wrap{display:flex;align-items:center;gap:18px}.donut{width:190px;height:190px;border-radius:50%;background:conic-gradient(#315bea 0 38%,#16b979 38% 56%,#ffb02e 56% 78%,#ed4c9b 78% 86%,#8d54e9 86% 93%,#16b9d9 93% 100%);position:relative;flex:none}.donut:after{content:"₹1.62 Cr";position:absolute;inset:36px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:900;font-size:19px;color:var(--ink)}.alloc-list{display:grid;gap:9px;width:100%}.alloc-row{display:grid;grid-template-columns:10px 1fr auto;gap:7px;align-items:center;font-size:11px}.alloc-row b{font-size:11px}
+.goals{display:grid;gap:10px}.goal{padding:11px;border:1px solid #e7ebf5;border-radius:14px}.goal-top{display:flex;justify-content:space-between;font-size:11px;font-weight:800}.bar{height:7px;background:#edf1f8;border-radius:9px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--blue),var(--cyan))}.goal:nth-child(2) i{background:linear-gradient(90deg,var(--pink),#ff8bc7)}.goal:nth-child(3) i{background:linear-gradient(90deg,var(--orange),var(--yellow))}.goal:nth-child(4) i{background:linear-gradient(90deg,var(--purple),#c18bff)}
+.insights{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.insight{border:1px solid #e8edf7;border-radius:14px;padding:12px;background:linear-gradient(145deg,#fff,#f8faff)}.insight .big{font-size:20px}.insight b{font-size:11px;display:block;margin:5px 0}.insight p{font-size:10px;color:var(--muted);line-height:1.45;margin:0}
+.cashbar{height:45px;display:flex;border-radius:13px;overflow:hidden;margin:16px 0 12px}.cashbar i{display:block}.cash-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.cash-legend div{font-size:10px;color:var(--muted)}.cash-legend b{display:block;color:var(--ink);font-size:12px;margin-top:2px}
+.section-tabs{display:flex;gap:7px;overflow:auto;margin-bottom:15px}.tab{border:1px solid var(--line);background:#fff;color:#60708c;border-radius:10px;padding:8px 11px;font-size:11px;font-weight:700;white-space:nowrap}.tab.active{background:#eef3ff;color:var(--blue);border-color:#cdd8ff}
+.page{display:none}.page.active{display:block}.page#overview{display:block}.page#overview:not(.active){display:none}
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.mini-kpi{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px}.mini-kpi small{color:var(--muted);font-size:10px}.mini-kpi strong{display:block;font-size:19px;margin-top:5px}
+.table{width:100%;border-collapse:collapse;font-size:11px}.table th,.table td{padding:11px 8px;border-bottom:1px solid #edf0f6;text-align:left}.table th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}.tag{border-radius:99px;padding:4px 7px;font-size:9px;font-weight:800}.tag.green{background:#e8fbf2;color:#0c9b62}.tag.orange{background:#fff4df;color:#c97900}.tag.red{background:#ffedf0;color:#d63c50}.tag.blue{background:#edf2ff;color:#315bea}
+.fan{height:300px}.fan svg{width:100%;height:100%}.scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.scenario{border:1px solid var(--line);border-radius:17px;padding:15px;background:linear-gradient(145deg,#fff,#f7f9ff)}.scenario h4{margin:0 0 8px;font-size:13px}.scenario .score{font-size:28px;font-weight:900}.slider{width:100%}
+.risk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.risk-card{border-radius:17px;padding:15px;border:1px solid var(--line);background:#fff}.risk-ring{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) 0 82%,#e8edf5 82%);margin-bottom:10px;position:relative}.risk-ring:after{content:"";position:absolute;inset:8px;background:#fff;border-radius:50%}.risk-ring b{position:relative;z-index:2;font-size:15px}
+.timeline{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px}.timeline div{height:62px;border-radius:9px;background:#f1f4fa;position:relative}.timeline div:nth-child(2),.timeline div:nth-child(4),.timeline div:nth-child(6){background:linear-gradient(180deg,#dbe5ff,#eef3ff)}.timeline b{position:absolute;bottom:7px;left:8px;font-size:9px;color:#66728b}.timeline i{position:absolute;top:7px;left:8px;width:7px;height:7px;border-radius:50%;background:var(--pink)}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form{display:grid;gap:9px}.form label{font-size:10px;color:var(--muted);font-weight:800}.form input,.form select{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;color:var(--ink)}
+.primary{border:0;background:linear-gradient(100deg,#315bea,#7658ef);color:#fff;border-radius:10px;padding:10px 14px;font-weight:800}.ghost{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 14px;color:#5e6c86;font-weight:750}
+.mobile-nav{display:none}.device-bar{display:flex;gap:7px;margin-left:auto}.device-bar button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 10px;font-size:11px;color:#5e6c86}.device-bar button.active{background:#13235b;color:#fff;border-color:#13235b}
+body.dark{--bg:#071126;--surface:#0e1a33;--surface2:#111f3d;--ink:#f3f6ff;--muted:#9aa9c7;--line:#243555;--shadow:0 18px 45px #0006}.dark .topbar,.dark .sidebar{background:#0a1730}.dark .metric,.dark .card,.dark .mini-kpi,.dark .risk-card,.dark .scenario,.dark .insight,.dark .form input,.dark .form select,.dark .pill,.dark .ghost,.dark .tab,.dark .switcher button{background:#0e1a33;color:var(--ink);border-color:#253657}.dark .donut:after,.dark .risk-ring:after{background:#0e1a33}.dark .hero{box-shadow:0 20px 50px #0008}
+body.premium{--bg:#0f0d13;--surface:#18131d;--surface2:#211927;--ink:#fff7e7;--muted:#b9aebf;--line:#3b2d40;--blue:#f1bd55;--cyan:#d78aff;--green:#75dfad;--pink:#ff6da8;--orange:#ff9b54;--purple:#b888ff;--shadow:0 18px 48px #0009}.premium .topbar,.premium .sidebar{background:#151017}.premium .nav button.active{background:linear-gradient(100deg,#a97728,#e7b95e);color:#1a1208}.premium .hero{background:linear-gradient(110deg,#251a2d,#6e3f69 50%,#b16b28 100%)}.premium .donut:after,.premium .risk-ring:after{background:#18131d}.premium .metric,.premium .card,.premium .mini-kpi,.premium .risk-card,.premium .scenario,.premium .insight,.premium .form input,.premium .form select,.premium .pill,.premium .ghost,.premium .tab,.premium .switcher button{background:#18131d;color:var(--ink);border-color:#3b2d40}
+body.compact .content{max-width:none;width:100%;}.compact .grid4{grid-template-columns:repeat(2,1fr)}
+@media(max-width:1100px){.app{display:block}.sidebar{width:78px}.main{margin-left:78px}.sidebar{padding:18px 10px}.logo div:not(.logo-mark),.nav button span:not(.ico),.fire-mini,.switcher{display:none}.logo{justify-content:center;padding:4px 0 22px}.nav button{justify-content:center}.row-main{grid-template-columns:1fr 1fr}.insights{grid-template-columns:1fr 1fr}.hero-side{display:none}}
+@media(max-width:760px){.app{display:block}.sidebar{display:none}.main{margin-left:0}.topbar{height:62px;padding:10px 13px}.search{font-size:10px}.top-actions .pill{display:none}.content{padding:13px 12px 82px}.hero{min-height:155px;padding:20px;border-radius:19px}.hero h1{font-size:21px}.grid4,.row-main,.row-wide,.profile-grid,.scenario-grid,.risk-grid{grid-template-columns:1fr}.grid4{gap:9px}.metric{padding:13px}.metric h2{font-size:20px}.row{margin-top:10px}.card{padding:14px;border-radius:17px}.chart{height:225px}.donut-wrap{flex-direction:column}.donut{width:165px;height:165px}.insights{grid-template-columns:1fr 1fr}.kpi-strip{grid-template-columns:1fr 1fr}.timeline{grid-template-columns:repeat(4,1fr)}.device-bar{display:none}.mobile-nav{display:flex;position:fixed;left:10px;right:10px;bottom:10px;height:62px;background:rgba(255,255,255,.95);border:1px solid var(--line);box-shadow:0 12px 35px #172d5b22;border-radius:18px;z-index:20;align-items:center;justify-content:space-around}.dark .mobile-nav,.premium .mobile-nav{background:rgba(15,24,45,.96)}.mobile-nav button{border:0;background:none;color:#7b88a0;font-size:9px;font-weight:700;display:grid;gap:3px;justify-items:center}.mobile-nav button.active{color:var(--blue)}.cash-legend{grid-template-columns:1fr}.fan{height:260px}}
+
+/* RAYAM v4.2 — layout hardening
+   The previous build mixed a CSS grid shell with a fixed sidebar and then
+   added a second left offset to the main area. This version uses one layout
+   system only: fixed sidebar + normal-flow main. */
+.app{display:block;min-height:100vh;width:100%;}
+.sidebar{position:fixed;left:0;top:0;width:252px;height:100vh;}
+.main{display:block;width:auto;min-width:0;margin-left:252px;min-height:100vh;}
+.topbar{width:100%;}
+.content{display:block;width:100%;max-width:none;margin:0;padding:22px 24px 90px;}
+.page{display:none;width:100%;min-width:0;}
+.page.active{display:block;width:100%;}
+.hero,.grid4,.row,.kpi-strip,.profile-grid,.scenario-grid,.risk-grid,.card,.metric{min-width:0;max-width:100%;}
+.grid4{grid-template-columns:repeat(4,minmax(0,1fr));}
+.row-main{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,.9fr);}
+.row-wide{grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);}
+.kpi-strip{grid-template-columns:repeat(4,minmax(0,1fr));}
+.profile-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+.scenario-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+.risk-grid{grid-template-columns:repeat(4,minmax(0,1fr));}
+.insights{grid-template-columns:repeat(4,minmax(0,1fr));}
+.donut-wrap{min-width:0;}
+.alloc-list{min-width:0;}
+.alloc-row{min-width:0;}
+.alloc-row span{min-width:0;overflow-wrap:anywhere;}
+.card-title h3,.metric-head,.hero h1,.hero p{min-width:0;overflow-wrap:anywhere;}
+.table{max-width:100%;}
+.table th,.table td{overflow-wrap:anywhere;}
+@media (max-width:1200px){
+  .content{padding-left:20px;padding-right:20px;}
+  .grid4{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .row-main{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);}
+  .row-main>.card:last-child{grid-column:1/-1;}
+  .insights{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .risk-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media (max-width:1100px){
+  .sidebar{width:78px;padding:18px 10px;}
+  .main{margin-left:78px;}
+  .logo div:not(.logo-mark),.nav button span:not(.ico),.fire-mini,.switcher{display:none;}
+  .logo{justify-content:center;padding:4px 0 22px;}
+  .nav button{justify-content:center;}
+  .hero-side{display:none;}
+}
+@media (max-width:760px){
+  .sidebar{display:none;}
+  .main{margin-left:0;width:100%;}
+  .topbar{height:62px;padding:10px 13px;}
+  .content{width:100%;padding:13px 12px 82px;}
+  .hero{min-height:155px;padding:20px;border-radius:19px;}
+  .hero h1{font-size:21px;}
+  .grid4,.row-main,.row-wide,.profile-grid,.scenario-grid,.risk-grid,.kpi-strip{grid-template-columns:minmax(0,1fr);}
+  .row-main>.card:last-child{grid-column:auto;}
+  .grid4{gap:9px;}
+  .insights{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .donut-wrap{flex-direction:column;align-items:center;}
+  .alloc-list{width:100%;}
+  .mobile-nav{display:flex;}
+}
+@media (min-width:761px){
+  .mobile-nav{display:none!important;}
+}
+
+
+/* RAYAM v4.3 safe-paint patch: remove decorative pseudo-elements that can create oversized paint/overflow artifacts */
+.hero::before{content:none !important;display:none !important;}
+.metric::after{content:none !important;display:none !important;}
+/* Keep all major dashboard surfaces in normal painting contexts */
+html,body{width:100%;max-width:100%;overflow-x:hidden;}
+.app,.main,.content,.page,.hero,.grid4,.row,.card{min-width:0;max-width:100%;}
+.page{position:relative;isolation:isolate;}
+.hero{overflow:clip;isolation:isolate;box-shadow:0 14px 32px rgba(42,66,125,.10);}
+.topbar{backdrop-filter:none;-webkit-backdrop-filter:none;}
+/* Explicitly prevent decorative rings from escaping their cards */
+.metric,.card,.risk-card,.fire-mini{overflow:hidden;}
+/* Keep the actual data visualisations responsive */
+.chart,.fan,.donut-wrap,.alloc-list,.insights,.goals,.cashbar{max-width:100%;}
+.chart svg,.fan svg{display:block;max-width:100%;}
+@media(max-width:1100px){.content{width:100%;padding-left:18px;padding-right:18px}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}.row-main{grid-template-columns:repeat(2,minmax(0,1fr))}.row-wide{grid-template-columns:minmax(0,1.6fr) minmax(280px,1fr)}}
+@media(max-width:760px){.content{width:100%;padding:13px 12px 82px}.grid4,.row-main,.row-wide{grid-template-columns:minmax(0,1fr)}.hero{overflow:hidden}.hero-side{position:static;text-align:left;margin-top:16px;max-width:none}.hero-quote{font-size:14px}}
+
+
+/* RAYAM v4.4: ring regression guard — FIRE progress uses inline SVG, not a .ring div/pseudo-element. */
+.ring,.ring::before,.ring::after{display:none!important;content:none!important;}
+.fire-progress svg{overflow:hidden;max-width:100%;}
+
+
+/* RAYAM v4.5 — true mobile layout + desktop Mobile-preview mode
+   Fixes the v4.4 issue where body.compact only narrowed the content width
+   while leaving desktop 3/4-column grids active. */
+body.compact .sidebar{display:none!important;}
+body.compact .main{width:min(100%,520px);margin-left:auto!important;margin-right:auto;min-width:0;}
+body.compact .topbar{height:62px;padding:10px 13px;position:sticky;top:0;}
+body.compact .search{font-size:12px;min-width:0;}
+body.compact .top-actions .pill{display:none;}
+body.compact .device-bar{display:none;}
+body.compact .content{width:100%;max-width:none!important;margin:0;padding:13px 12px 88px;}
+body.compact .hero{min-height:0;height:auto;padding:20px;border-radius:19px;overflow:hidden;}
+body.compact .hero h1{font-size:22px;line-height:1.12;margin-bottom:8px;}
+body.compact .hero p{font-size:13px;line-height:1.45;}
+body.compact .hero-side{display:block;position:static;right:auto;top:auto;max-width:none;text-align:left;margin-top:14px;}
+body.compact .hero-quote{font-size:14px;line-height:1.25;}
+body.compact .hero-date{font-size:10px;margin-top:7px;}
+body.compact .grid4{grid-template-columns:minmax(0,1fr);gap:10px;margin-top:12px;}
+body.compact .metric{padding:14px;border-radius:17px;}
+body.compact .metric h2{font-size:22px;margin-top:11px;}
+body.compact .metric .spark{height:32px;}
+body.compact .row{margin-top:10px;}
+body.compact .row-main,
+body.compact .row-wide,
+body.compact .kpi-strip,
+body.compact .profile-grid,
+body.compact .scenario-grid,
+body.compact .risk-grid{grid-template-columns:minmax(0,1fr)!important;}
+body.compact .row-main>.card:last-child{grid-column:auto;}
+body.compact .card{padding:14px;border-radius:17px;min-width:0;width:100%;}
+body.compact .card-title{align-items:flex-start;margin-bottom:12px;}
+body.compact .card-title h3{font-size:15px;line-height:1.15;}
+body.compact .card-title span{font-size:10px;white-space:nowrap;}
+body.compact .donut-wrap{flex-direction:row;align-items:center;gap:16px;}
+body.compact .donut{width:145px;height:145px;flex:0 0 145px;}
+body.compact .alloc-list{width:100%;gap:8px;}
+body.compact .alloc-row{grid-template-columns:9px minmax(0,1fr) auto;gap:6px;font-size:10px;}
+body.compact .alloc-row b{font-size:10px;}
+body.compact .fire-progress-large{width:82px;height:82px;flex-basis:82px;}
+body.compact .chart{height:190px;}
+body.compact .chart svg{overflow:hidden;}
+body.compact .goals{gap:8px;}
+body.compact .goal{padding:10px;}
+body.compact .insights{grid-template-columns:minmax(0,1fr)!important;}
+body.compact .cash-legend{grid-template-columns:1fr;}
+body.compact .timeline{grid-template-columns:repeat(4,minmax(0,1fr));}
+body.compact .fan{height:220px;}
+body.compact .table{display:block;overflow-x:auto;white-space:nowrap;}
+body.compact .mobile-nav{display:flex;}
+
+/* Real phones: same single-column rules, without relying on the preview class. */
+@media (max-width:760px){
+  .main{width:100%;margin-left:0!important;}
+  .topbar{height:62px;padding:10px 13px;}
+  .search{min-width:0;width:100%;font-size:12px;}
+  .top-actions .pill{display:none;}
+  .device-bar{display:none;}
+  .content{width:100%;max-width:none;padding:13px 12px 88px;}
+  .hero{min-height:0;height:auto;padding:20px;border-radius:19px;}
+  .hero h1{font-size:22px;line-height:1.12;}
+  .hero p{font-size:13px;line-height:1.45;}
+  .hero-side{display:block;position:static;max-width:none;text-align:left;margin-top:14px;}
+  .hero-quote{font-size:14px;line-height:1.25;}
+  .hero-date{font-size:10px;margin-top:7px;}
+  .grid4{grid-template-columns:minmax(0,1fr);gap:10px;margin-top:12px;}
+  .metric{padding:14px;border-radius:17px;}
+  .metric h2{font-size:22px;}
+  .row-main,.row-wide,.kpi-strip,.profile-grid,.scenario-grid,.risk-grid{grid-template-columns:minmax(0,1fr)!important;}
+  .row-main>.card:last-child{grid-column:auto;}
+  .card{padding:14px;border-radius:17px;}
+  .donut-wrap{flex-direction:row;align-items:center;gap:16px;}
+  .donut{width:145px;height:145px;flex:0 0 145px;}
+  .chart{height:190px;}
+  .chart svg{overflow:hidden;}
+  .insights{grid-template-columns:minmax(0,1fr)!important;}
+  .mobile-nav{display:flex;}
+}
+
+
+/* RAYAM v4.7 — mobile navigation UX polish
+   The mobile nav is a persistent bottom tab bar: clearly separated from content,
+   safe-area aware, with a strong active state and an intentional More surface. */
+.mobile-nav{
+  display:none;
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:max(12px, env(safe-area-inset-bottom));
+  height:72px;
+  padding:7px;
+  box-sizing:border-box;
+  background:rgba(255,255,255,.97);
+  border:1px solid rgba(214,222,240,.95);
+  box-shadow:0 14px 34px rgba(29,48,96,.18),0 3px 10px rgba(29,48,96,.08);
+  border-radius:22px;
+  z-index:100;
+  align-items:stretch;
+  justify-content:stretch;
+  gap:4px;
+}
+.dark .mobile-nav{background:rgba(13,23,43,.98);border-color:#263556;box-shadow:0 16px 38px rgba(0,0,0,.36)}
+.premium .mobile-nav{background:rgba(25,20,31,.98);border-color:#493b55}
+.mobile-tab{
+  appearance:none;
+  -webkit-tap-highlight-color:transparent;
+  border:0;
+  background:transparent;
+  color:#7b88a0;
+  min-width:0;
+  flex:1 1 0;
+  border-radius:17px;
+  padding:5px 3px 4px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  font:700 10px/1.05 Inter,system-ui,sans-serif;
+  cursor:pointer;
+  transition:background .16s ease,color .16s ease,transform .12s ease;
+}
+.mobile-tab:active{transform:scale(.96)}
+.mobile-tab .nav-icon{
+  width:30px;height:30px;border-radius:10px;
+  display:grid;place-items:center;
+  color:currentColor;
+  transition:background .16s ease,color .16s ease;
+}
+.mobile-tab .nav-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.mobile-tab.active{color:var(--blue);background:#edf2ff}
+.mobile-tab.active .nav-icon{background:var(--blue);color:#fff;box-shadow:0 4px 10px rgba(49,91,234,.22)}
+.mobile-tab.more-active{color:var(--blue);background:#edf2ff}
+.mobile-tab.more-active .nav-icon{background:#e1e9ff;color:var(--blue)}
+.dark .mobile-tab.active,.dark .mobile-tab.more-active{background:#17284e}
+.dark .mobile-tab.active .nav-icon{background:#315bea;color:#fff}
+.premium .mobile-tab.active,.premium .mobile-tab.more-active{background:#2b2130}
+.premium .mobile-tab.active .nav-icon{background:#a873d8;color:#fff}
+.mobile-more-menu{
+  display:none;
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:calc(92px + env(safe-area-inset-bottom));
+  width:auto;
+  max-height:min(70vh,520px);
+  overflow:auto;
+  padding:9px;
+  background:rgba(255,255,255,.99);
+  border:1px solid #dce3f2;
+  border-radius:20px;
+  box-shadow:0 20px 48px rgba(20,35,90,.22),0 5px 16px rgba(20,35,90,.08);
+  z-index:110;
+}
+.dark .mobile-more-menu{background:#0e1a33;border-color:#263556}
+.premium .mobile-more-menu{background:#18131d;border-color:#493b55}
+.more-menu-title{display:flex;align-items:center;justify-content:space-between;padding:8px 8px 9px;border-bottom:1px solid var(--line);margin-bottom:4px;font-size:13px;font-weight:850;color:var(--ink)}
+.more-close{width:30px;height:30px;border:0;border-radius:9px;background:#f1f4f9;color:#60708c;font-size:20px;line-height:1;cursor:pointer}
+.dark .more-close,.premium .more-close{background:#202d47;color:#c8d2e8}
+.mobile-more-menu>button[role="menuitem"]{width:100%;border:0;background:transparent;text-align:left;padding:9px 8px;border-radius:13px;color:var(--ink);font:inherit;display:grid;grid-template-columns:34px minmax(0,1fr) 18px;gap:9px;align-items:center;cursor:pointer}
+.mobile-more-menu>button[role="menuitem"]:hover,.mobile-more-menu>button[role="menuitem"].active{background:#eef3ff;color:var(--blue)}
+.dark .mobile-more-menu>button[role="menuitem"]:hover,.dark .mobile-more-menu>button[role="menuitem"].active,.premium .mobile-more-menu>button[role="menuitem"]:hover,.premium .mobile-more-menu>button[role="menuitem"].active{background:#17284e}
+.menu-icon{width:32px;height:32px;border-radius:10px;background:#f0f4ff;color:var(--blue);display:grid;place-items:center;font-size:14px;font-weight:900}
+.dark .menu-icon,.premium .menu-icon{background:#202d47}
+.mobile-more-menu b{display:block;font-size:12px;line-height:1.15}.mobile-more-menu small{display:block;margin-top:3px;color:var(--muted);font-size:9px;line-height:1.25;font-weight:600}.mobile-more-menu i{font-style:normal;color:#8a96aa;font-size:20px;text-align:right}
+@media (min-width:761px){body.compact .mobile-nav{display:flex!important}.mobile-nav{display:none}}
+@media (max-width:760px){.mobile-nav{display:flex!important}.content{padding-bottom:112px!important}}
+body.compact .mobile-nav{display:flex!important}
+body.compact .content{padding-bottom:112px!important}
+body.compact .mobile-more-menu{display:none}
+
+/* RAYAM v4.8 — interactive portfolio tabs + mobile-fold navigation */
+.section-tabs{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;margin-bottom:9px;padding:2px 1px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.section-tabs::-webkit-scrollbar{display:none}
+.section-tabs .tab{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:8px 11px;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:12px;font-size:10px;font-weight:800;white-space:nowrap;cursor:pointer;transition:transform .15s ease,background .15s ease,border-color .15s ease,box-shadow .15s ease,color .15s ease;box-shadow:0 2px 0 rgba(25,43,88,.02);}
+.section-tabs .tab:hover{transform:translateY(-1px);border-color:#b9c8ef;color:var(--ink);box-shadow:0 6px 16px rgba(49,91,234,.08)}
+.section-tabs .tab:focus-visible{outline:3px solid rgba(49,91,234,.22);outline-offset:2px}
+.section-tabs .tab.active{background:linear-gradient(180deg,#f1f5ff 0%,#e8efff 100%);color:var(--blue);border-color:#b9c9ff;box-shadow:0 7px 18px rgba(49,91,234,.12),inset 0 -2px 0 var(--blue);}
+.section-tabs .tab-icon{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;background:#f1f4f9;color:#7c89a2;font-size:11px;font-weight:900;}
+.section-tabs .tab.active .tab-icon{background:var(--blue);color:#fff;}
+.section-tabs .tab b{min-width:18px;height:18px;padding:0 5px;border-radius:99px;display:grid;place-items:center;background:#eef1f7;color:#7b88a0;font-size:8px;line-height:1;}
+.section-tabs .tab.active b{background:#d7e2ff;color:var(--blue)}
+.tab-context{display:flex;align-items:center;gap:7px;min-height:31px;padding:7px 10px;margin-bottom:13px;border:1px solid #e0e6f2;background:#f8faff;border-radius:10px;color:var(--muted);font-size:9px;font-weight:650;}
+.tab-context strong{color:var(--ink);font-size:10px}.context-dot{width:7px;height:7px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 3px rgba(49,91,234,.10)}.context-spacer{flex:1}.empty-filter{padding:28px 16px;text-align:center;border:1px dashed #cfd8ea;border-radius:14px;background:#f9fbff;margin-top:10px;color:var(--muted)}.empty-filter span{display:grid;place-items:center;width:36px;height:36px;margin:0 auto 8px;border-radius:11px;background:#eef3ff;color:var(--blue);font-size:18px}.empty-filter strong{display:block;color:var(--ink);font-size:12px}.empty-filter small{display:block;margin-top:5px;font-size:9px;line-height:1.4}
+.dark .section-tabs .tab,.premium .section-tabs .tab{background:var(--surface);border-color:var(--line)}.dark .section-tabs .tab.active,.premium .section-tabs .tab.active{background:#18284d}.dark .section-tabs .tab-icon,.premium .section-tabs .tab-icon{background:#202d47}.dark .section-tabs .tab b,.premium .section-tabs .tab b{background:#202d47}.dark .tab-context,.premium .tab-context{background:var(--surface2);border-color:var(--line)}
+body.compact .mobile-nav{left:50%;right:auto;width:min(calc(100% - 24px),496px);transform:translateX(-50%);}
+body.compact .mobile-more-menu{left:50%;right:auto;width:min(calc(100% - 24px),496px);transform:translateX(-50%);}
+body.compact .section-tabs{padding-right:2px;}
+body.compact .section-tabs .tab{min-height:42px;padding:8px 12px;font-size:10px;}
+body.compact .tab-context{font-size:9px;flex-wrap:wrap;}
+body.compact .context-spacer{display:none}
+body.compact .empty-filter{margin-bottom:6px}
+
+/* RAYAM v4.9 — Portfolio tab scale, iconography and motion layer */
+.section-tabs{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:4px 3px 11px;
+  margin:0 0 15px;
+  scrollbar-width:none;
+  scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
+}
+.section-tabs::-webkit-scrollbar{display:none}
+.section-tabs .tab{
+  flex:0 0 auto;
+  min-width:178px;
+  min-height:72px;
+  display:grid;
+  grid-template-columns:46px minmax(0,1fr) auto;
+  align-items:center;
+  gap:11px;
+  padding:11px 13px;
+  border:1px solid #dfe5f2;
+  border-radius:18px;
+  background:linear-gradient(180deg,#fff 0%,#f9fbff 100%);
+  color:#63718e;
+  box-shadow:0 5px 15px rgba(34,57,110,.07), inset 0 1px 0 rgba(255,255,255,.9);
+  font-size:13px;
+  font-weight:800;
+  line-height:1.15;
+  cursor:pointer;
+  scroll-snap-align:start;
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  transition:transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s ease, border-color .2s ease, color .2s ease, background .2s ease;
+}
+.section-tabs .tab::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.8) 48%,transparent 70%);
+  transform:translateX(-120%);
+  transition:transform .55s ease;
+  z-index:-1;
+}
+.section-tabs .tab:hover::before{transform:translateX(120%)}
+.section-tabs .tab:hover{transform:translateY(-2px);border-color:#cbd7f5;box-shadow:0 10px 24px rgba(49,91,234,.12)}
+.section-tabs .tab:active{transform:translateY(0) scale(.985)}
+.section-tabs .tab:focus-visible{outline:3px solid rgba(49,91,234,.22);outline-offset:2px}
+.section-tabs .tab.active{
+  color:#315bea;
+  border-color:#9fb5ff;
+  background:linear-gradient(135deg,#eef3ff 0%,#f7f5ff 100%);
+  box-shadow:0 12px 26px rgba(49,91,234,.16), inset 0 -3px 0 #315bea;
+}
+.section-tabs .tab.active::after{
+  content:"";
+  position:absolute;
+  left:18px;right:18px;bottom:0;height:3px;border-radius:99px;
+  background:linear-gradient(90deg,#315bea,#8d54e9,#ed4c9b);
+  animation:tabActivate .42s ease both;
+}
+.tab-icon{
+  width:46px;height:46px;border-radius:14px;
+  display:grid;place-items:center;
+  color:#71809d;
+  background:#edf2fa;
+  border:1px solid #e3e9f4;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+  transition:transform .22s ease, background .22s ease, color .22s ease, box-shadow .22s ease;
+}
+.tab-icon svg{width:23px;height:23px;display:block}
+.tab:hover .tab-icon{transform:scale(1.06);color:#315bea;background:#e9efff}
+.tab.active .tab-icon{color:#fff;background:linear-gradient(135deg,#315bea,#7658ef);border-color:transparent;box-shadow:0 6px 14px rgba(49,91,234,.25)}
+.tab b{
+  min-width:31px;height:31px;padding:0 8px;
+  display:inline-grid;place-items:center;
+  border-radius:999px;
+  background:#edf1f8;color:#64728e;
+  font-size:12px;font-weight:900;
+  transition:transform .2s ease, background .2s ease, color .2s ease;
+}
+.tab.active b{background:#dce6ff;color:#315bea;transform:scale(1.06)}
+.tab-context{min-height:52px}
+
+/* Subtle motion: make the portfolio feel alive without turning it into a carousel. */
+.page.active .hero{animation:pageHeroIn .5s ease both}
+.page.active .section-tabs{animation:contentRise .42s .04s ease both}
+.page.active .tab-context{animation:contentRise .42s .08s ease both}
+.page.active .mini-kpi{animation:contentRise .45s ease both}
+.page.active .mini-kpi:nth-child(2){animation-delay:.05s}
+.page.active .mini-kpi:nth-child(3){animation-delay:.10s}
+.page.active .mini-kpi:nth-child(4){animation-delay:.15s}
+#portfolio .card{transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease}
+#portfolio .card:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(31,52,101,.10);border-color:#d5def0}
+#portfolio .chart rect[fill="#315bea"],#portfolio .chart rect[fill="#16b979"],#portfolio .chart rect[fill="#ffb02e"],#portfolio .chart rect[fill="#ed4c9b"],#portfolio .chart rect[fill="#8d54e9"]{transform-box:fill-box;transform-origin:left center;animation:barReveal .8s cubic-bezier(.2,.8,.2,1) both}
+#portfolio .chart rect[fill="#16b979"]{animation-delay:.06s}
+#portfolio .chart rect[fill="#ffb02e"]{animation-delay:.12s}
+#portfolio .chart rect[fill="#ed4c9b"]{animation-delay:.18s}
+#portfolio .chart rect[fill="#8d54e9"]{animation-delay:.24s}
+.tab-pulse .tab-icon{animation:iconPop .34s cubic-bezier(.2,.8,.2,1)}
+@keyframes iconPop{0%{transform:scale(.82) rotate(-4deg)}65%{transform:scale(1.1) rotate(2deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes tabActivate{from{opacity:0;transform:scaleX(.35)}to{opacity:1;transform:scaleX(1)}}
+@keyframes pageHeroIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@keyframes contentRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes barReveal{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* Tablet / mobile: larger touch targets, but still horizontally scrollable. */
+@media(max-width:760px){
+  .section-tabs{gap:9px;margin-left:-2px;margin-right:-2px;padding-bottom:10px}
+  .section-tabs .tab{min-width:164px;min-height:68px;grid-template-columns:42px minmax(0,1fr) auto;padding:10px 11px;border-radius:16px;font-size:12px}
+  .tab-icon{width:42px;height:42px;border-radius:12px}
+  .tab-icon svg{width:21px;height:21px}
+  .tab b{min-width:29px;height:29px;font-size:11px}
+}
+@media(min-width:1101px){
+  .section-tabs .tab{min-width:190px;min-height:78px;grid-template-columns:50px minmax(0,1fr) auto;font-size:14px}
+  .tab-icon{width:50px;height:50px}
+  .tab-icon svg{width:25px;height:25px}
+  .tab b{min-width:34px;height:34px;font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  .section-tabs .tab,.tab-icon,#portfolio .card{transition:none}
+  .section-tabs .tab::before{display:none}
+  .page.active .hero,.page.active .section-tabs,.page.active .tab-context,.page.active .mini-kpi,#portfolio .chart rect{animation:none!important}
+}
+
+
+/* RAYAM v5.0 — animated wealth environment and live widgets */
+html{scroll-behavior:smooth}
+body{overflow-x:hidden}
+.ambient-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:
+  radial-gradient(circle at 12% 12%,rgba(49,91,234,.10),transparent 24%),
+  radial-gradient(circle at 88% 18%,rgba(141,84,233,.09),transparent 23%),
+  radial-gradient(circle at 78% 84%,rgba(22,185,121,.07),transparent 22%),
+  linear-gradient(180deg,#f7f9ff 0%,#f1f5ff 100%)}
+.ambient-bg:before,.ambient-bg:after{content:"";position:absolute;border-radius:50%;filter:blur(32px);opacity:.45;will-change:transform}
+.ambient-bg:before{width:280px;height:280px;left:12%;top:28%;background:rgba(49,91,234,.13);animation:ambientFloat 14s ease-in-out infinite alternate}
+.ambient-bg:after{width:230px;height:230px;right:12%;bottom:14%;background:rgba(237,76,155,.10);animation:ambientFloat 17s ease-in-out -5s infinite alternate-reverse}
+.main,.sidebar{z-index:2}
+.content{position:relative;z-index:2}
+.topbar{position:sticky;z-index:8}
+
+.live-widget{display:grid;grid-template-columns:minmax(220px,1.25fr) repeat(3,minmax(120px,.7fr)) auto;gap:10px;align-items:stretch;margin-top:14px;padding:11px;border:1px solid rgba(205,216,245,.95);border-radius:18px;background:linear-gradient(135deg,rgba(255,255,255,.94),rgba(246,249,255,.88));box-shadow:0 12px 30px rgba(42,66,125,.08);backdrop-filter:blur(8px);overflow:hidden}
+.live-core{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:13px;background:linear-gradient(135deg,#edf3ff,#fff);border:1px solid #e1e8f8;min-width:0}
+.live-orb{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#e8f0ff;color:var(--blue);position:relative;flex:0 0 34px}
+.live-orb:before,.live-orb:after{content:"";position:absolute;inset:0;border:1px solid rgba(49,91,234,.25);border-radius:50%;animation:pulseRing 2.4s ease-out infinite}
+.live-orb:after{animation-delay:1.2s}
+.live-orb span{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(22,185,121,.12)}
+.live-copy{min-width:0}.live-copy b{display:block;font-size:11px}.live-copy small{display:block;color:var(--muted);font-size:9px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.live-stat{padding:9px 10px;border-radius:13px;background:rgba(255,255,255,.72);border:1px solid #e8edf7;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.live-stat small{font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.35px}.live-stat strong{font-size:15px;margin-top:3px}.live-stat em{font-style:normal;font-size:8px;font-weight:800;margin-top:2px}.live-stat.positive em{color:var(--green)}.live-stat.warning em{color:var(--orange)}
+.live-spark{height:35px;width:120px;align-self:center;padding:2px 6px}.live-spark svg{width:100%;height:100%;overflow:visible}.live-spark path{fill:none;stroke:var(--blue);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:320;stroke-dashoffset:320;animation:drawLine 1.8s cubic-bezier(.2,.8,.2,1) forwards, liveWave 3.8s ease-in-out 1.8s infinite alternate}
+.live-spark .area{fill:url(#liveArea);stroke:none;opacity:.55;stroke-dasharray:none;stroke-dashoffset:0;animation:areaBreath 4s ease-in-out infinite}
+.live-refresh{border:1px solid #dce5f8;background:#fff;border-radius:11px;padding:8px 10px;color:var(--blue);font-size:9px;font-weight:800;display:flex;align-items:center;gap:6px;white-space:nowrap}.live-refresh:hover{transform:translateY(-1px);box-shadow:0 6px 15px rgba(49,91,234,.10)}.refresh-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(22,185,121,.10)}
+
+.widget-grid{display:grid;grid-template-columns:1.35fr .9fr;gap:16px;margin-top:16px}
+.animated-chart-card{position:relative;overflow:hidden}.animated-chart-card:after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 15%,rgba(255,255,255,.32) 50%,transparent 85%);transform:translateX(-120%);animation:shineSweep 6s ease-in-out 1s infinite;pointer-events:none}
+.widget-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:9px}.widget-title h3{margin:0;font-size:14px}.widget-title small{color:var(--muted);font-size:9px}.pulse-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:999px;background:#eafaf3;color:#0c9b62;font-size:8px;font-weight:900}.pulse-badge i{width:6px;height:6px;border-radius:50%;background:currentColor;animation:liveBlink 1.6s ease-in-out infinite}
+.wealth-wave{height:125px}.wealth-wave svg{width:100%;height:100%;overflow:visible}.wealth-wave .gridline{stroke:#e9eef7;stroke-width:1}.wealth-wave .area{fill:url(#wealthArea);opacity:.75}.wealth-wave .required,.wealth-wave .projected{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:3}.wealth-wave .required{stroke:#315bea;stroke-dasharray:720;stroke-dashoffset:720;animation:drawLine 2.2s cubic-bezier(.2,.8,.2,1) .2s forwards}.wealth-wave .projected{stroke:#16b979;stroke-dasharray:720;stroke-dashoffset:720;animation:drawLine 2.2s cubic-bezier(.2,.8,.2,1) .55s forwards}.chart-point{fill:#fff;stroke:#315bea;stroke-width:2;animation:pointPop .55s cubic-bezier(.2,.8,.2,1) 2s both}
+.widget-rail{display:grid;gap:9px}.mini-live{padding:11px;border:1px solid #e7ecf6;border-radius:14px;background:linear-gradient(145deg,#fff,#f8faff);position:relative;overflow:hidden}.mini-live:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(#315bea,#8d54e9)}.mini-live-head{display:flex;align-items:center;justify-content:space-between}.mini-live-head b{font-size:10px}.mini-live-head span{font-size:8px;color:var(--muted)}.mini-live-value{font-size:20px;font-weight:950;margin-top:5px}.mini-live-sub{font-size:9px;color:var(--muted);margin-top:2px}.mini-bars{display:flex;align-items:flex-end;gap:4px;height:35px;margin-top:8px}.mini-bars i{display:block;flex:1;border-radius:4px 4px 2px 2px;background:linear-gradient(180deg,#8d54e9,#315bea);transform-origin:bottom;animation:barGrow .9s cubic-bezier(.2,.8,.2,1) both}.mini-bars i:nth-child(1){height:38%;animation-delay:.1s}.mini-bars i:nth-child(2){height:60%;animation-delay:.16s}.mini-bars i:nth-child(3){height:46%;animation-delay:.22s}.mini-bars i:nth-child(4){height:76%;animation-delay:.28s}.mini-bars i:nth-child(5){height:58%;animation-delay:.34s}.mini-bars i:nth-child(6){height:92%;animation-delay:.4s}.mini-bars i:nth-child(7){height:70%;animation-delay:.46s}.mini-bars i:nth-child(8){height:100%;animation-delay:.52s}
+
+/* Richer motion for existing charts and KPIs — layout-neutral properties only. */
+.spark polyline{stroke-dasharray:280;stroke-dashoffset:280;animation:drawLine 1.35s cubic-bezier(.2,.8,.2,1) .25s forwards}
+.metric{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}.metric:hover{transform:translateY(-3px);box-shadow:0 18px 38px rgba(42,66,125,.13);border-color:#d5def0}.metric h2{animation:valueRise .65s cubic-bezier(.2,.8,.2,1) both}.card{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}.card:hover{box-shadow:0 18px 38px rgba(42,66,125,.11);border-color:#d8e1f3}
+.donut{animation:donutFloat 7s ease-in-out infinite alternate}.donut-wrap .alloc-row{transition:transform .18s ease,background .18s ease}.donut-wrap .alloc-row:hover{transform:translateX(4px)}
+.goal .bar i{transform-origin:left center;animation:barReveal 1.1s cubic-bezier(.2,.8,.2,1) .25s both}
+.section-tabs .tab-icon{transition:transform .2s ease,box-shadow .2s ease}.section-tabs .tab:hover .tab-icon{transform:translateY(-2px) rotate(-2deg);box-shadow:0 5px 12px rgba(49,91,234,.13)}
+
+/* Animated background is deliberately slow/subtle; no giant transformed paint layers. */
+@keyframes pulseRefresh{0%{opacity:.72}50%{opacity:1}100%{opacity:.72}}
+.pulse-refresh{animation:pulseRefresh .55s ease}
+@keyframes ambientFloat{0%{transform:translate3d(-10px,-8px,0)}100%{transform:translate3d(24px,18px,0)}}
+@keyframes pulseRing{0%{transform:scale(.72);opacity:.7}75%,100%{transform:scale(1.7);opacity:0}}
+@keyframes drawLine{to{stroke-dashoffset:0}}
+@keyframes liveWave{0%{opacity:.75}100%{opacity:1;filter:brightness(1.08)}}
+@keyframes areaBreath{0%,100%{opacity:.32}50%{opacity:.58}}
+@keyframes shineSweep{0%,58%{transform:translateX(-120%)}75%,100%{transform:translateX(120%)}}
+@keyframes liveBlink{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes barGrow{from{transform:scaleY(.08)}to{transform:scaleY(1)}}
+@keyframes barReveal{from{transform:scaleX(.05)}to{transform:scaleX(1)}}
+@keyframes valueRise{from{opacity:.25;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes donutFloat{0%{transform:translateY(0)}100%{transform:translateY(-4px)}}
+@keyframes pointPop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+
+.dark .ambient-bg{background:radial-gradient(circle at 12% 12%,rgba(49,91,234,.16),transparent 25%),radial-gradient(circle at 88% 18%,rgba(141,84,233,.15),transparent 24%),linear-gradient(180deg,#0b1325,#0f1930)}
+.premium .ambient-bg{background:radial-gradient(circle at 12% 12%,rgba(183,142,68,.13),transparent 24%),radial-gradient(circle at 88% 18%,rgba(141,84,233,.13),transparent 24%),linear-gradient(180deg,#151018,#1b1520)}
+.dark .live-widget,.premium .live-widget{background:linear-gradient(135deg,rgba(20,31,55,.96),rgba(24,37,67,.92));border-color:#2b3a5b}.dark .live-core,.premium .live-core,.dark .live-stat,.premium .live-stat,.dark .mini-live,.premium .mini-live{background:#14213b;border-color:#293959}.dark .live-refresh,.premium .live-refresh{background:#182744;border-color:#2e3d5e}.dark .live-copy b,.premium .live-copy b{color:#f4f7ff}.dark .widget-title h3,.premium .widget-title h3{color:#f4f7ff}
+
+@media(max-width:1100px){.live-widget{grid-template-columns:1.3fr repeat(3,1fr)}.live-spark{display:none}.live-refresh{grid-column:1/-1;justify-content:center}.widget-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.ambient-bg:before{width:170px;height:170px;left:2%;top:25%}.ambient-bg:after{width:150px;height:150px;right:2%;bottom:12%}.live-widget{grid-template-columns:1fr 1fr;gap:8px;padding:9px;border-radius:16px}.live-core{grid-column:1/-1}.live-stat strong{font-size:14px}.live-refresh{grid-column:1/-1}.widget-grid{grid-template-columns:1fr;gap:10px}.wealth-wave{height:115px}.mini-live-value{font-size:18px}.animated-chart-card:after{animation-duration:8s}}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .ambient-bg:before,.ambient-bg:after,.live-orb:before,.live-orb:after,.live-spark path,.live-spark .area,.animated-chart-card:after,.wealth-wave .required,.wealth-wave .projected,.chart-point,.mini-bars i,.spark polyline,.metric h2,.donut,.goal .bar i,.live-copy,.pulse-badge i{animation:none!important}
+  .metric,.card,.section-tabs .tab-icon,.donut-wrap .alloc-row{transition:none!important}
+}
+
+
+/* RAYAM v5.1 — Balance Sheet visual intelligence */
+.balance-row{align-items:stretch}
+.balance-card,.wealth-quality-card{overflow:hidden;position:relative}
+.balance-head{gap:18px;align-items:flex-start}
+.balance-sub{margin:5px 0 0;color:var(--muted);font-size:11px;line-height:1.45;max-width:620px}
+.snapshot-badge{display:inline-flex!important;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;background:linear-gradient(135deg,#eef4ff,#f8f0ff);color:#315bea!important;font-size:10px!important;font-weight:800;white-space:nowrap;border:1px solid #dbe4ff}
+.snapshot-badge i{width:7px;height:7px;border-radius:50%;background:#16b979;box-shadow:0 0 0 4px #16b97920;animation:balancePulse 2s ease-in-out infinite}
+.balance-hero{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;margin:14px 0 16px;padding:18px;border-radius:18px;background:radial-gradient(circle at 10% 20%,#315bea12,transparent 42%),linear-gradient(135deg,#f8faff,#fbfbff);border:1px solid var(--line)}
+.balance-net span{display:block;color:var(--muted);font-size:11px;font-weight:700}.balance-net strong{display:block;font-size:34px;line-height:1.05;margin:6px 0 5px;letter-spacing:-1px}.balance-net em{font-style:normal;color:#16b979;font-size:11px;font-weight:800}
+.ratio-ring{width:92px;height:92px;position:relative;display:grid;place-items:center}.ratio-ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.ratio-ring circle{fill:none;stroke-width:9}.ratio-track{stroke:#e8edf7}.ratio-progress{stroke:#ef5364;stroke-linecap:round;stroke-dasharray:301.6;stroke-dashoffset:230.1;animation:ratioIn 1.2s cubic-bezier(.2,.8,.2,1) both}.ratio-ring b{font-size:17px;line-height:1}.ratio-ring small{position:absolute;top:62px;font-size:7px;color:var(--muted);font-weight:800;white-space:nowrap}
+.balance-stack{padding:3px 2px 0}.stack-track{height:22px;border-radius:999px;background:#edf1f8;display:flex;overflow:hidden;box-shadow:inset 0 1px 2px #13235b12}.stack-assets{width:76.3%;background:linear-gradient(90deg,#315bea,#16b9d9);position:relative;overflow:hidden}.stack-assets span{position:absolute;inset:0;background:linear-gradient(110deg,transparent 25%,#fff5 45%,transparent 65%);transform:translateX(-100%);animation:shimmer 3.5s ease-in-out infinite}.stack-liability{width:23.7%;background:linear-gradient(90deg,#ef5364,#f77986)}
+.stack-labels{display:grid;grid-template-columns:1.1fr 1.1fr 1fr;gap:10px;margin-top:10px}.stack-labels>div{display:grid;grid-template-columns:auto 1fr auto;column-gap:7px;align-items:center}.stack-labels i{grid-row:1/3;width:8px;height:8px;border-radius:50%}.asset-dot{background:#315bea}.debt-dot{background:#ef5364}.net-dot{background:#16b979}.stack-labels span{font-size:10px;color:var(--muted);font-weight:700}.stack-labels b{font-size:12px}.stack-labels small{grid-column:2/4;color:var(--muted);font-size:8px}
+.balance-breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px}.break-card{padding:11px;border:1px solid var(--line);border-radius:14px;background:var(--card);display:grid;grid-template-columns:auto 1fr;column-gap:9px;position:relative;transition:transform .25s ease,box-shadow .25s ease}.break-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px #22346b14}.break-icon{width:29px;height:29px;border-radius:10px;display:grid;place-items:center;font-weight:900;font-size:15px}.asset-icon{background:#eaf0ff;color:#315bea}.debt-icon{background:#ffedf0;color:#ef5364}.net-icon{background:#e7fbf4;color:#16b979}.break-card span{display:block;font-size:9px;color:var(--muted);font-weight:700}.break-card strong{display:block;font-size:15px;margin-top:2px}.break-card small{display:block;color:var(--muted);font-size:8px;margin-top:2px;white-space:nowrap}.break-meter{grid-column:1/-1;height:4px;background:#edf1f8;border-radius:99px;margin-top:9px;overflow:hidden}.break-meter i{display:block;height:100%;background:linear-gradient(90deg,#315bea,#16b9d9);border-radius:99px;animation:meterIn 1.1s ease both}.debt-meter i{background:linear-gradient(90deg,#ef5364,#f79b9f)}.net-meter i{background:linear-gradient(90deg,#16b979,#16b9d9)}
+.balance-insight{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border-radius:13px;background:#f7f9ff;border:1px solid var(--line)}.insight-pulse{width:8px;height:8px;border-radius:50%;background:#16b979;box-shadow:0 0 0 5px #16b97918;flex:0 0 auto;animation:balancePulse 2s ease-in-out infinite}.balance-insight div:nth-child(2){flex:1}.balance-insight b{display:block;font-size:10px}.balance-insight span{display:block;color:var(--muted);font-size:9px;margin-top:2px;line-height:1.35}.balance-insight button{border:0;background:none;color:#315bea;font-weight:900;font-size:10px;cursor:pointer;white-space:nowrap}
+.quality-score{padding:6px 9px;border-radius:10px;background:#f0f5ff;color:#315bea;font-size:11px!important}.quality-score b{font-size:17px}.quality-orbit{height:255px;position:relative;margin:4px 0}.quality-orbit:before,.quality-orbit:after{content:"";position:absolute;border:1px dashed #dbe4f4;border-radius:50%;inset:32px 52px}.quality-orbit:after{inset:58px 78px;border-color:#e8edf7}.quality-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:92px;height:92px;border-radius:50%;display:grid;place-content:center;text-align:center;background:radial-gradient(circle at 35% 30%,#fff,#f1f5ff);border:8px solid #eaf0ff;box-shadow:0 12px 30px #315bea1c;z-index:2}.quality-center strong{font-size:13px;color:#16b979}.quality-center small{font-size:8px;color:var(--muted);margin-top:3px}.quality-node{position:absolute;width:70px;height:70px;border-radius:18px;background:var(--card);border:1px solid var(--line);box-shadow:0 8px 20px #23346b0d;display:grid;place-content:center;text-align:center;z-index:3;animation:nodeFloat 4s ease-in-out infinite}.quality-node span{font-size:16px}.quality-node b{font-size:14px;margin-top:2px}.quality-node small{font-size:7px;color:var(--muted);font-weight:800}.q1{left:2%;top:18px;color:#16b979}.q2{right:2%;top:18px;color:#315bea;animation-delay:.5s}.q3{left:2%;bottom:18px;color:#f19a35;animation-delay:1s}.q4{right:2%;bottom:18px;color:#ed4c9b;animation-delay:1.5s}.quality-footer{display:flex;justify-content:space-between;gap:8px;padding-top:10px;border-top:1px solid var(--line);font-size:9px;color:var(--muted)}.quality-footer i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}.signal-green{background:#16b979}.signal-orange{background:#f19a35}
+@keyframes ratioIn{from{stroke-dashoffset:301.6}to{stroke-dashoffset:230.1}}@keyframes meterIn{from{width:0}}@keyframes shimmer{0%,35%{transform:translateX(-100%)}70%,100%{transform:translateX(100%)}}@keyframes balancePulse{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.3);opacity:1}}@keyframes nodeFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media(max-width:760px){body.compact .balance-row{grid-template-columns:minmax(0,1fr)!important}body.compact .balance-hero{grid-template-columns:1fr auto;padding:14px}.balance-net strong{font-size:28px}.stack-labels{grid-template-columns:1fr}.balance-breakdown{grid-template-columns:1fr}.quality-orbit{height:235px}.quality-node{width:64px;height:64px}.quality-orbit:before{inset:30px 42px}.quality-orbit:after{inset:55px 64px}.balance-insight{align-items:flex-start}.balance-insight button{font-size:9px}.snapshot-badge{display:none!important}}
+@media(prefers-reduced-motion:reduce){.snapshot-badge i,.ratio-progress,.stack-assets span,.break-meter i,.insight-pulse,.quality-node{animation:none!important}}
+
+/* RAYAM v5.2 — Overview Insight Experience */
+.hero{isolation:isolate}
+.hero-icon-field{position:absolute;right:24px;top:16px;width:260px;height:126px;pointer-events:none;z-index:0}
+.hero-icon{position:absolute;display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);box-shadow:0 10px 24px rgba(10,22,72,.16);backdrop-filter:blur(5px);color:#fff}
+.hero-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hero-icon.i1{right:178px;top:10px;animation:floatA 4.8s ease-in-out infinite}
+.hero-icon.i2{right:105px;top:48px;animation:floatB 5.6s ease-in-out infinite .3s}
+.hero-icon.i3{right:24px;top:8px;animation:floatA 5.1s ease-in-out infinite .7s}
+.hero-icon.i4{right:54px;bottom:4px;width:34px;height:34px;border-radius:11px;animation:floatB 4.4s ease-in-out infinite .2s}
+.hero-spark{position:absolute;right:154px;top:83px;width:8px;height:8px;border-radius:50%;background:#ffd36a;box-shadow:0 0 0 6px rgba(255,211,106,.12),0 0 18px rgba(255,211,106,.55);animation:sparkPulse 2.2s ease-in-out infinite}
+.hero-icon-field:after{content:"";position:absolute;right:35px;top:24px;width:170px;height:86px;border:1px solid rgba(255,255,255,.16);border-radius:50%;transform:rotate(-14deg);animation:orbitGlow 7s linear infinite}
+.hero-copy-badge{display:inline-flex;align-items:center;gap:6px;margin-bottom:10px;padding:5px 9px;border-radius:99px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);font-size:9px;font-weight:800;letter-spacing:.35px;position:relative;z-index:2}
+.hero-copy-badge i{width:6px;height:6px;border-radius:50%;background:#6ff0b8;box-shadow:0 0 0 5px rgba(111,240,184,.1);animation:statusPulse 2s ease-in-out infinite}
+.insight-command{position:relative;overflow:hidden}
+.insight-command:before{content:"";position:absolute;right:-90px;top:-110px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(49,91,234,.10),transparent 66%);pointer-events:none}
+.insight-headline{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;position:relative;z-index:1}
+.insight-headline h3{margin:0;font-size:18px}
+.insight-headline p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.45}
+.insight-score{min-width:104px;padding:9px 11px;border:1px solid #e2e8f5;border-radius:14px;background:linear-gradient(145deg,#fff,#f5f8ff);text-align:right}
+.insight-score small{display:block;color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:.45px;font-weight:800}
+.insight-score strong{display:block;font-size:19px;margin-top:2px;color:var(--blue)}
+.insight-score span{font-size:8px;color:var(--green);font-weight:800}
+.insight-filters{display:flex;gap:7px;overflow:auto;padding:12px 0 10px;position:relative;z-index:2;scrollbar-width:none}
+.insight-filters::-webkit-scrollbar{display:none}
+.insight-filter{border:1px solid #e1e7f3;background:#fff;color:#6b7894;border-radius:999px;padding:7px 10px;font-size:9px;font-weight:800;white-space:nowrap;cursor:pointer;transition:.22s ease}
+.insight-filter:hover{transform:translateY(-1px);border-color:#c8d5f8}
+.insight-filter.active{background:#edf2ff;color:#315bea;border-color:#bfcfff;box-shadow:0 5px 14px rgba(49,91,234,.10)}
+.insight-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:12px;position:relative;z-index:1}
+.insight-queue{display:grid;gap:8px}
+.insight-item{position:relative;border:1px solid #e3e9f5;border-radius:15px;padding:11px 12px;background:linear-gradient(145deg,#fff,#f8faff);cursor:pointer;overflow:hidden;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;animation:insightIn .55s both}
+.insight-item:nth-child(2){animation-delay:.08s}.insight-item:nth-child(3){animation-delay:.16s}.insight-item:nth-child(4){animation-delay:.24s}
+.insight-item:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(42,66,125,.09);border-color:#cdd8f3}
+.insight-item:after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--insight-color,#315bea)}
+.insight-item-top{display:flex;align-items:center;gap:9px}.insight-symbol{width:31px;height:31px;border-radius:10px;display:grid;place-items:center;background:var(--insight-bg,#edf2ff);color:var(--insight-color,#315bea);flex:none}
+.insight-symbol svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.insight-item-copy{min-width:0;flex:1}.insight-item-copy b{font-size:11px;display:block}.insight-item-copy p{font-size:9px;color:var(--muted);margin:3px 0 0;line-height:1.4}.insight-meta{font-size:8px;font-weight:800;color:var(--muted);white-space:nowrap}
+.insight-mini{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.insight-mini span{font-size:8px;color:var(--muted)}.insight-mini strong{display:block;font-size:10px;margin-top:2px}.insight-meter{height:4px;background:#eaf0f8;border-radius:99px;overflow:hidden;margin-top:5px}.insight-meter i{display:block;height:100%;width:var(--w,70%);background:linear-gradient(90deg,var(--insight-color,#315bea),#16b979);border-radius:99px;transform-origin:left;animation:meterIn .9s cubic-bezier(.2,.75,.25,1) both}
+.insight-radar{border:1px solid #e2e8f5;border-radius:16px;background:linear-gradient(145deg,#f8faff,#fff);padding:12px;display:flex;flex-direction:column;justify-content:space-between;min-height:100%}
+.radar-title{display:flex;justify-content:space-between;align-items:center}.radar-title b{font-size:11px}.radar-title span{font-size:8px;color:var(--green);font-weight:800}
+.radar-viz{position:relative;display:grid;place-items:center;min-height:175px}.radar-viz svg{width:100%;max-width:220px;height:180px;overflow:visible}.radar-ring{fill:none;stroke:#dfe7f4;stroke-width:1}.radar-shape{fill:rgba(49,91,234,.12);stroke:#315bea;stroke-width:2;stroke-dasharray:420;stroke-dashoffset:420;animation:drawRadar 1.5s ease-out forwards .25s}.radar-dot{fill:#16b979;filter:drop-shadow(0 0 4px rgba(22,185,121,.35));animation:radarPulse 2.1s ease-in-out infinite}
+.radar-center{position:absolute;text-align:center;pointer-events:none}.radar-center strong{font-size:24px;display:block}.radar-center small{font-size:8px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.insight-action{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:8px;border-top:1px solid #e8edf6}.insight-action span{font-size:8px;color:var(--muted)}.insight-action button{border:0;background:#edf2ff;color:#315bea;border-radius:9px;padding:7px 9px;font-size:9px;font-weight:800;cursor:pointer}
+.insight-empty{display:none;padding:22px;text-align:center;border:1px dashed #ccd6e8;border-radius:14px;color:var(--muted);font-size:10px}
+@keyframes floatA{0%,100%{transform:translate3d(0,0,0) rotate(-2deg)}50%{transform:translate3d(0,-7px,0) rotate(2deg)}}
+@keyframes floatB{0%,100%{transform:translate3d(0,0,0) rotate(2deg)}50%{transform:translate3d(0,6px,0) rotate(-2deg)}}
+@keyframes sparkPulse{0%,100%{transform:scale(.8);opacity:.65}50%{transform:scale(1.25);opacity:1}}
+@keyframes orbitGlow{from{transform:rotate(-14deg) rotate(0deg)}to{transform:rotate(-14deg) rotate(360deg)}}
+@keyframes statusPulse{0%,100%{opacity:.55;transform:scale(.85)}50%{opacity:1;transform:scale(1.1)}}
+@keyframes insightIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes meterIn{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes drawRadar{to{stroke-dashoffset:0}}
+@keyframes radarPulse{0%,100%{transform:scale(.85);transform-origin:center;opacity:.75}50%{transform:scale(1.15);opacity:1}}
+@media(max-width:1100px){.hero-icon-field{right:14px;opacity:.75}.insight-grid{grid-template-columns:1fr}.insight-radar{min-height:260px}.radar-viz{min-height:190px}}
+@media(max-width:760px){.hero-icon-field{right:8px;top:12px;transform:scale(.78);transform-origin:top right;opacity:.55}.hero-icon.i1{right:165px}.hero-copy-badge{font-size:8px}.insight-headline{align-items:stretch;flex-direction:column}.insight-score{text-align:left;min-width:0}.insight-grid{grid-template-columns:1fr}.insight-radar{min-height:250px}.insight-item{padding:12px}.insight-mini{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){.hero-icon,.hero-icon-field:after,.hero-spark,.hero-copy-badge i,.insight-item,.insight-meter i,.radar-shape,.radar-dot{animation:none!important}.insight-item:hover{transform:none}.radar-shape{stroke-dashoffset:0}}
+
+</style>
+
+<style id="family-investor-v53">
+/* RAYAM v5.3 — household / investor context layer */
+.household-context{position:sticky;top:72px;z-index:7;display:grid;grid-template-columns:minmax(240px,1.1fr) minmax(360px,1.6fr) minmax(220px,1fr);gap:10px;align-items:stretch;padding:10px 24px;background:rgba(248,250,255,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+.context-advisor,.context-investor,.context-contrib{min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:14px;display:flex;align-items:center;gap:10px;padding:9px 12px;box-shadow:0 6px 18px rgba(29,50,100,.05)}
+.context-avatar{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto;background:linear-gradient(135deg,#315bea,#8d54e9);color:#fff;font-weight:900;font-size:12px}
+.context-advisor .context-avatar{background:linear-gradient(135deg,#172a73,#16b979)}
+.context-meta{min-width:0;display:grid;gap:2px}.context-meta small{font-size:9px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.55px}.context-meta b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.context-meta span{font-size:9px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.context-investor{cursor:pointer;justify-content:space-between}.context-investor:hover{border-color:#b8c8ff;box-shadow:0 9px 24px rgba(49,91,234,.12)}
+.context-investor-main{display:flex;align-items:center;gap:10px;min-width:0}.context-chevron{width:28px;height:28px;border-radius:9px;background:#eef3ff;color:#315bea;display:grid;place-items:center;font-size:15px;font-weight:900;flex:0 0 auto}
+.context-contrib{display:grid;grid-template-columns:auto 1fr;gap:8px}.context-contrib .mini-progress{width:100%;height:6px;background:#e9eef8;border-radius:99px;overflow:hidden}.context-contrib .mini-progress i{display:block;height:100%;width:72%;background:linear-gradient(90deg,#315bea,#16b979);border-radius:99px;animation:familyProgress 1.2s ease both}.context-contrib strong{font-size:14px}.context-contrib small{font-size:9px;color:var(--muted)}
+.family-panel{position:fixed;top:82px;right:24px;width:min(470px,calc(100vw - 32px));z-index:40;background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 60px rgba(12,28,70,.22);padding:14px;display:none;animation:familyPanelIn .2s ease both}.family-panel.open{display:block}.family-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:3px 3px 12px}.family-panel-head h3{margin:0;font-size:15px}.family-panel-head p{margin:3px 0 0;font-size:10px;color:var(--muted)}.family-close{width:32px;height:32px;border:1px solid var(--line);background:var(--surface2);border-radius:10px;color:var(--ink);font-size:18px;cursor:pointer}.family-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.family-summary-card{border:1px solid var(--line);border-radius:13px;padding:10px;background:var(--surface2)}.family-summary-card small{display:block;color:var(--muted);font-size:9px}.family-summary-card strong{display:block;font-size:16px;margin-top:3px}.family-summary-card span{font-size:9px;color:#16b979;font-weight:800}.family-member-list{display:grid;gap:7px;max-height:390px;overflow:auto}.family-member{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:10px;text-align:left;cursor:pointer;color:var(--ink);transition:.2s ease}.family-member:hover{transform:translateY(-1px);border-color:#b9c8ff}.family-member.active{border-color:#315bea;background:linear-gradient(90deg,#eef3ff,#fff);box-shadow:0 8px 20px rgba(49,91,234,.10)}.member-avatar{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:11px;font-weight:900;background:#eef3ff;color:#315bea}.member-info{min-width:0}.member-info b{font-size:12px;display:block}.member-info small{font-size:9px;color:var(--muted);display:block;margin-top:2px}.member-money{text-align:right}.member-money strong{font-size:12px;display:block}.member-money small{font-size:8px;color:var(--muted)}.member-check{width:22px;height:22px;border:2px solid #d5ddec;border-radius:50%;display:grid;place-items:center;color:transparent;font-size:12px;font-weight:900}.family-member.active .member-check{background:#315bea;border-color:#315bea;color:#fff}
+.family-scope{margin-top:10px;padding:10px 12px;border-radius:12px;background:linear-gradient(90deg,#f4f7ff,#f9f8ff);border:1px solid var(--line);font-size:10px;color:var(--muted)}.family-scope b{color:var(--ink)}
+body.dark .household-context{background:rgba(7,17,38,.94)} body.dark .context-investor:hover{border-color:#3b5ca8} body.dark .family-member.active{background:#112244} body.dark .family-scope{background:#0d1931}
+body.premium .household-context{background:rgba(21,16,23,.94)} body.premium .context-investor:hover{border-color:#8c6a3d} body.premium .family-member.active{background:#241c27} body.premium .family-scope{background:#201821}
+@keyframes familyPanelIn{from{opacity:0;transform:translateY(-6px) scale(.985)}to{opacity:1;transform:none}} @keyframes familyProgress{from{width:0}to{width:72%}}
+@media(max-width:1100px){.household-context{grid-template-columns:1fr 1.5fr;padding:8px 14px}.context-contrib{display:none}.family-panel{right:14px;top:72px}}
+@media(max-width:760px){.household-context{position:sticky;top:62px;grid-template-columns:minmax(0,1fr) auto;padding:7px 12px;gap:7px}.context-advisor{display:none}.context-investor{padding:8px 9px}.context-meta small{font-size:8px}.context-meta b{font-size:11px}.context-meta span{font-size:8px}.context-chevron{width:26px;height:26px}.context-contrib{display:grid;padding:8px 9px;min-width:112px}.context-contrib strong{font-size:12px}.context-contrib small{font-size:8px}.family-panel{top:106px;right:10px;width:calc(100vw - 20px);border-radius:18px}.family-member-list{max-height:58vh}.family-panel-head h3{font-size:14px}.family-summary-card strong{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.context-contrib .mini-progress i,.family-panel,.family-member{animation:none!important;transition:none!important}}
+</style>
+
+
+<style id="family-selector-v55">
+/* RAYAM v5.5 — richer household selector */
+.context-investor{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  min-height:78px;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.context-investor::before{
+  content:"";
+  position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(110deg,rgba(49,91,234,.055),rgba(126,79,255,.025) 55%,rgba(22,185,121,.045));
+  opacity:.9;
+}
+.context-investor:hover{
+  transform:translateY(-1px);
+  border-color:#8da8f7;
+  box-shadow:0 13px 30px rgba(49,91,234,.14);
+}
+.context-investor:active{transform:translateY(0) scale(.995)}
+.context-investor.is-open{
+  border-color:#315bea;
+  box-shadow:0 0 0 3px rgba(49,91,234,.09),0 15px 34px rgba(49,91,234,.16);
+}
+.context-investor-main{position:relative;z-index:1}
+.context-avatar{
+  position:relative;
+  flex:0 0 auto;
+  box-shadow:0 5px 14px rgba(49,91,234,.16);
+}
+.context-investor-main .context-avatar::after{
+  content:"";
+  position:absolute;right:-3px;bottom:-3px;width:10px;height:10px;border-radius:50%;
+  background:#16b979;border:2px solid var(--surface);
+  box-shadow:0 0 0 3px rgba(22,185,121,.10);
+}
+.context-switch-control{
+  display:flex;align-items:center;gap:7px;flex:0 0 auto;
+  position:relative;z-index:1;
+}
+.context-switch-label{
+  font-size:8px;letter-spacing:.12em;font-weight:900;color:var(--muted);
+  opacity:.9;
+}
+.context-switch-count{
+  display:grid;place-items:center;width:26px;height:26px;border-radius:9px;
+  background:linear-gradient(145deg,#eef3ff,#f8f6ff);
+  border:1px solid #dce5fb;color:#315bea;
+}
+.context-switch-count i{font-style:normal;font-size:10px;font-weight:900}
+.context-switch-icon{
+  display:grid;place-items:center;width:38px;height:38px;border-radius:13px;
+  color:#315bea;background:linear-gradient(145deg,#eef3ff,#f3edff);
+  border:1px solid #dbe4fb;box-shadow:0 5px 14px rgba(49,91,234,.10);
+  transition:transform .2s ease,background .2s ease,box-shadow .2s ease;
+}
+.context-switch-icon svg{width:17px;height:17px}
+.context-investor.is-open .context-switch-icon{
+  transform:rotate(180deg);
+  background:linear-gradient(145deg,#315bea,#7b4ce8);
+  color:#fff;
+  box-shadow:0 8px 20px rgba(49,91,234,.22);
+}
+.context-investor.is-open .context-switch-label{color:#315bea}
+.context-contrib .contrib-visual{min-width:0}
+.context-contrib .contrib-visual .mini-progress{margin-top:1px}
+.context-contrib .mini-progress i{box-shadow:0 0 12px rgba(49,91,234,.18)}
+.family-panel{
+  border-color:#dbe3f7;
+  box-shadow:0 30px 80px rgba(12,28,70,.24),0 0 0 1px rgba(255,255,255,.75) inset;
+}
+.family-panel::before{
+  content:"";display:block;width:54px;height:4px;border-radius:99px;margin:0 auto 9px;
+  background:linear-gradient(90deg,#315bea,#8b4fe8,#16b979);
+  opacity:.9;
+}
+.family-panel-head{padding-top:1px}
+.family-panel-head h3{font-size:16px;letter-spacing:-.01em}
+.family-panel-head p{line-height:1.45}
+.family-summary-card{position:relative;overflow:hidden}
+.family-summary-card::after{
+  content:"";position:absolute;right:-18px;top:-22px;width:58px;height:58px;border-radius:50%;
+  background:radial-gradient(circle,rgba(49,91,234,.12),transparent 68%);
+}
+.family-member{
+  position:relative;
+  overflow:hidden;
+}
+.family-member::after{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:99px;
+  background:linear-gradient(#315bea,#8b4fe8);transform:scaleY(0);transition:transform .18s ease;
+}
+.family-member.active::after{transform:scaleY(1)}
+.family-member:focus-visible,.context-investor:focus-visible,.family-close:focus-visible{
+  outline:3px solid rgba(49,91,234,.22);outline-offset:2px;
+}
+@media(max-width:760px){
+  .context-investor{min-height:64px}
+  .context-switch-label{display:none}
+  .context-switch-count{width:24px;height:24px;border-radius:8px}
+  .context-switch-icon{width:34px;height:34px;border-radius:11px}
+  .context-investor-main{gap:9px}
+  .family-panel{top:112px}
+}
+body.dark .context-investor::before,body.premium .context-investor::before{opacity:.45}
+body.dark .context-switch-count,body.dark .context-switch-icon,
+body.premium .context-switch-count,body.premium .context-switch-icon{background:#132244;border-color:#263b6b}
+@media(prefers-reduced-motion:reduce){
+  .context-investor,.context-switch-icon,.family-member{transition:none!important}
+}
+</style>
+
+<style id="family-mobile-portfolio-v54">
+/* RAYAM v5.4 — mobile household context + portfolio tab rail */
+@media(max-width:760px){
+  .household-context{
+    position:sticky;top:62px;z-index:7;
+    display:grid;grid-template-columns:minmax(0,1fr);
+    gap:8px;padding:8px 12px;
+  }
+  .household-context .context-investor{width:100%;min-width:0;padding:10px 11px;border-radius:15px;}
+  .household-context .context-investor-main{min-width:0;flex:1;}
+  .household-context .context-meta{min-width:0;overflow:hidden;}
+  .household-context .context-meta b{font-size:12px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .household-context .context-meta span{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .household-context .context-contrib{
+    display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;
+    min-width:0;width:100%;padding:9px 11px;border-radius:15px;gap:9px;
+  }
+  .household-context .context-contrib .mini-progress{grid-column:2;width:100%;height:7px;}
+  .household-context .context-contrib strong{font-size:13px;white-space:nowrap;}
+  .household-context .context-contrib small{font-size:8px;white-space:nowrap;}
+  .household-context .context-contrib .contrib-values{min-width:0;display:flex;gap:5px;align-items:center;white-space:nowrap;overflow:hidden;font-size:8px;color:var(--muted)}
+  .household-context .context-contrib .contrib-values span{flex:0 0 auto}
+  .family-panel{top:116px;left:10px;right:10px;width:auto;max-width:none;max-height:calc(100vh - 140px);}
+}
+
+.portfolio-tabs-wrap{position:relative;min-width:0;}
+.portfolio-tab-rail{position:relative;min-width:0;}
+.portfolio-tab-nav{
+  display:none;position:absolute;top:50%;z-index:4;transform:translateY(-50%);
+  width:36px;height:36px;border:1px solid var(--line);border-radius:12px;
+  background:rgba(255,255,255,.96);color:var(--ink);box-shadow:0 7px 18px rgba(27,47,92,.14);
+  place-items:center;cursor:pointer;font-size:18px;font-weight:900;
+}
+.portfolio-tab-nav.prev{left:5px}.portfolio-tab-nav.next{right:5px}
+.portfolio-tab-nav:disabled{opacity:.35;cursor:default}
+.portfolio-tab-nav:focus-visible{outline:3px solid rgba(49,91,234,.24);outline-offset:2px}
+.portfolio-tabs-wrap::before,.portfolio-tabs-wrap::after{content:"";position:absolute;top:0;bottom:10px;width:28px;z-index:2;pointer-events:none;opacity:0;transition:opacity .18s ease}
+.portfolio-tabs-wrap::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
+.portfolio-tabs-wrap::after{right:0;background:linear-gradient(270deg,var(--bg),transparent)}
+.portfolio-tabs-wrap.can-left::before,.portfolio-tabs-wrap.can-right::after{opacity:1}
+.section-tabs{scroll-behavior:smooth;overscroll-behavior-x:contain;touch-action:pan-x;}
+.section-tabs .tab{flex:0 0 auto;}
+@media(max-width:1100px){
+  .portfolio-tab-nav{display:grid;}
+  .portfolio-tab-rail{padding:0 42px;}
+  .section-tabs{padding-left:2px;padding-right:2px;}
+}
+@media(max-width:760px){
+  .portfolio-tab-rail{padding:0 40px;}
+  .portfolio-tab-nav{width:34px;height:34px;border-radius:11px;font-size:16px;}
+  .section-tabs .tab{min-width:166px;min-height:66px;grid-template-columns:40px minmax(0,1fr) auto;padding:10px 11px;gap:9px;}
+  .section-tabs .tab-icon{width:40px;height:40px;border-radius:12px;}
+  .section-tabs .tab-icon svg{width:20px;height:20px;}
+  .tab-context{line-height:1.25;}
+}
+@media(prefers-reduced-motion:reduce){.section-tabs{scroll-behavior:auto}.portfolio-tabs-wrap::before,.portfolio-tabs-wrap::after{transition:none}}
+</style>
+
+
+<style id="rayam-v57-family-bottom-sheet">
+/* RAYAM v5.7 — mobile family selector as a contained bottom sheet.
+   Keeps every family member + the Investment Advisor inside the viewport,
+   while allowing only the member list to scroll. */
+.family-mobile-advisor{display:none;align-items:center;gap:9px;border:1px solid #dbe4f7;background:linear-gradient(135deg,#f7faff,#ffffff);border-radius:14px;padding:9px 10px;margin:0 0 9px;min-width:0;box-shadow:0 6px 18px rgba(29,50,100,.06)}
+.family-mobile-advisor-avatar{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto;background:linear-gradient(135deg,#172a73,#16b979);color:#fff;font-size:10px;font-weight:900}
+.family-mobile-advisor-copy{min-width:0;display:flex;flex-direction:column;line-height:1.12}
+.family-mobile-advisor-copy small{font-size:7px;letter-spacing:.8px;color:#687795;font-weight:900}
+.family-mobile-advisor-copy b{font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.family-mobile-advisor-copy span{font-size:8px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.family-mobile-advisor-badge{margin-left:auto;flex:0 0 auto;border:1px solid #cfe1d8;background:#ecfaf4;color:#159667;border-radius:999px;padding:4px 7px;font-size:7px;font-weight:900;letter-spacing:.5px}
+
+@media (max-width:760px){
+  .family-panel{
+    position:fixed!important;
+    left:10px!important;right:10px!important;top:auto!important;bottom:12px!important;
+    width:auto!important;max-width:none!important;
+    max-height:calc(100dvh - 94px)!important;
+    height:auto!important;
+    display:none;
+    flex-direction:column;
+    overflow:hidden!important;
+    padding:12px!important;
+    border-radius:22px!important;
+    z-index:80!important;
+  }
+  .family-panel.open{display:flex!important}
+  .family-panel::before{flex:0 0 auto}
+  .family-panel-head{flex:0 0 auto;padding-bottom:9px!important}
+  .family-summary{flex:0 0 auto;margin-bottom:9px!important}
+  .family-mobile-advisor{display:flex}
+  .family-member-list{
+    flex:1 1 auto;min-height:0;max-height:none!important;
+    overflow-y:auto!important;overflow-x:hidden!important;
+    overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+    padding-right:1px;
+  }
+  .family-member{flex:0 0 auto}
+  .family-scope{flex:0 0 auto;margin-top:9px;max-height:54px;overflow:auto}
+}
+
+@media (max-width:390px){
+  .family-panel{left:7px!important;right:7px!important;bottom:8px!important;max-height:calc(100dvh - 82px)!important;padding:10px!important;border-radius:20px!important}
+  .family-panel-head{padding-bottom:7px!important}
+  .family-panel-head h3{font-size:13px!important}
+  .family-panel-head p{font-size:8px!important;line-height:1.3!important}
+  .family-summary{gap:6px!important;margin-bottom:7px!important}
+  .family-summary-card{padding:8px!important}
+  .family-summary-card strong{font-size:13px!important}
+  .family-mobile-advisor{padding:7px 8px!important;margin-bottom:7px!important}
+  .family-mobile-advisor-avatar{width:31px;height:31px;border-radius:10px}
+  .family-member-list{gap:5px!important}
+  .family-member{padding:8px!important;gap:8px!important;border-radius:12px!important}
+  .member-avatar{width:32px;height:32px;border-radius:10px}
+  .member-info b{font-size:10px}
+  .member-info small{font-size:8px}
+  .member-money strong{font-size:10px}
+  .family-scope{font-size:7px!important;line-height:1.25!important;padding:7px!important;margin-top:7px!important}
+}
+
+/* The desktop/tablet selector remains a floating panel, with advisor kept in the main context card. */
+body.compact .family-panel{
+  position:fixed!important;left:10px!important;right:10px!important;top:auto!important;bottom:72px!important;
+  width:auto!important;max-width:none!important;max-height:calc(100dvh - 92px)!important;
+  height:auto!important;display:none;flex-direction:column;overflow:hidden!important;
+  z-index:80!important;border-radius:22px!important;padding:12px!important;
+}
+body.compact .family-panel.open{display:flex!important}
+body.compact .family-panel-head{flex:0 0 auto}
+body.compact .family-summary{flex:0 0 auto}
+body.compact .family-mobile-advisor{display:flex}
+body.compact .family-member-list{flex:1 1 auto;min-height:0;max-height:none!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+body.compact .family-scope{flex:0 0 auto;max-height:54px;overflow:auto}
+
+body.dark .family-mobile-advisor{background:#101f3b;border-color:#263b6b}
+body.dark .family-mobile-advisor-badge{background:#112d25;border-color:#1f5e49;color:#6de0b1}
+body.premium .family-mobile-advisor{background:#211a26;border-color:#4a3a4c}
+</style>
+<style id="rayam-v56-mobile-header-fix">
+/* RAYAM v5.6 — compact mobile context header.
+   The desktop Mobile Preview uses body.compact, so this layer intentionally
+   does not depend on the browser viewport breakpoint. */
+body.compact .household-context{
+  position:sticky;top:62px;z-index:7;
+  display:grid;grid-template-columns:minmax(0,1fr) 132px;
+  gap:8px;align-items:stretch;
+  padding:8px 12px;
+  background:rgba(248,250,255,.96);
+  border-bottom:1px solid var(--line);
+}
+body.compact .household-context .context-advisor{display:none!important;}
+body.compact .household-context .context-investor{
+  width:100%;min-width:0;min-height:62px;height:62px;
+  padding:9px 10px;border-radius:15px;
+  gap:8px;box-shadow:0 5px 16px rgba(29,50,100,.05);
+}
+body.compact .household-context .context-investor-main{min-width:0;flex:1;gap:8px;}
+body.compact .household-context .context-avatar{width:34px;height:34px;border-radius:11px;}
+body.compact .household-context .context-meta{min-width:0;overflow:hidden;gap:2px;}
+body.compact .household-context .context-meta small{font-size:8px;letter-spacing:.45px;}
+body.compact .household-context .context-meta b{font-size:11px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+body.compact .household-context .context-meta span{font-size:8px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+body.compact .household-context .context-switch-control{gap:5px;flex:0 0 auto;}
+body.compact .household-context .context-switch-label{display:none;}
+body.compact .household-context .context-switch-count{width:27px;height:27px;border-radius:9px;font-size:11px;}
+body.compact .household-context .context-switch-icon{width:31px;height:31px;border-radius:10px;}
+body.compact .household-context .context-contrib{
+  width:100%;min-width:0;height:62px;min-height:62px;
+  display:flex;align-items:center;justify-content:center;
+  padding:8px 9px;border-radius:15px;gap:0;
+  text-align:left;
+}
+body.compact .household-context .context-contrib .context-meta{min-width:0;width:100%;}
+body.compact .household-context .context-contrib .context-meta small:first-child{
+  font-size:7px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+body.compact .household-context .context-contrib strong{display:block;font-size:14px;line-height:1.05;margin-top:3px;white-space:nowrap;}
+body.compact .household-context .context-contrib small:last-child{display:block;font-size:7px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;}
+body.compact .household-context .contrib-visual{display:none!important;}
+body.compact .family-panel{
+  top:140px;left:12px;right:12px;width:auto;max-width:none;
+  max-height:calc(100vh - 154px);border-radius:18px;
+}
+body.compact .content{padding-top:12px;}
+
+/* Real narrow browser/mobile devices get the same compact treatment. */
+@media(max-width:760px){
+  .household-context{grid-template-columns:minmax(0,1fr) 122px!important;}
+  .household-context .context-advisor{display:none!important;}
+  .household-context .context-switch-label{display:none!important;}
+  .household-context .context-contrib .contrib-visual{display:none!important;}
+  .household-context .context-contrib{display:flex!important;align-items:center;justify-content:center;height:60px;min-height:60px;}
+  .household-context .context-investor{height:60px;min-height:60px;}
+}
+@media(max-width:390px){
+  .household-context{grid-template-columns:minmax(0,1fr) 108px!important;padding-left:8px;padding-right:8px;gap:6px;}
+  .household-context .context-investor{padding-left:8px;padding-right:8px;}
+  .household-context .context-avatar{width:32px;height:32px;}
+  .household-context .context-switch-count{display:none;}
+  .household-context .context-switch-icon{width:29px;height:29px;}
+  .household-context .context-contrib{padding-left:7px;padding-right:7px;}
+}
+</style>
+
+<style id="rayam-v58-family-fold-fix">
+/* RAYAM v5.8 — mobile-preview-safe family selector.
+   body.compact can be active inside a desktop browser, so viewport-only
+   media queries are not enough. The sheet is explicitly bounded and the
+   member list becomes the only scrolling region. */
+body.compact .family-panel{
+  position:fixed!important;
+  left:10px!important;right:10px!important;
+  top:auto!important;bottom:74px!important;
+  width:auto!important;max-width:none!important;
+  height:min(660px,78vh)!important;
+  max-height:min(660px,78vh)!important;
+  min-height:0!important;
+  box-sizing:border-box!important;
+  display:none!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  padding:11px!important;
+  border-radius:22px!important;
+  z-index:120!important;
+}
+body.compact .family-panel.open{display:flex!important}
+body.compact .family-panel::before{flex:0 0 auto!important;margin-bottom:7px!important}
+body.compact .family-panel-head{
+  flex:0 0 auto!important;
+  min-height:0!important;
+  padding:0 2px 7px!important;
+}
+body.compact .family-panel-head h3{font-size:14px!important;line-height:1.15!important}
+body.compact .family-panel-head p{font-size:8px!important;line-height:1.3!important;margin-top:3px!important}
+body.compact .family-close{width:29px!important;height:29px!important;font-size:16px!important}
+body.compact .family-summary{
+  flex:0 0 auto!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:6px!important;
+  margin:0 0 7px!important;
+}
+body.compact .family-summary-card{padding:7px 8px!important;border-radius:11px!important}
+body.compact .family-summary-card small{font-size:7px!important}
+body.compact .family-summary-card strong{font-size:13px!important;margin-top:2px!important}
+body.compact .family-summary-card span{font-size:7px!important}
+body.compact .family-mobile-advisor{
+  flex:0 0 auto!important;
+  display:flex!important;
+  padding:7px 8px!important;
+  margin:0 0 7px!important;
+  border-radius:11px!important;
+  gap:7px!important;
+}
+body.compact .family-mobile-advisor-avatar{width:30px!important;height:30px!important;border-radius:9px!important;font-size:9px!important}
+body.compact .family-mobile-advisor-copy small{font-size:6px!important}
+body.compact .family-mobile-advisor-copy b{font-size:10px!important;margin-top:1px!important}
+body.compact .family-mobile-advisor-copy span{font-size:7px!important;margin-top:1px!important}
+body.compact .family-mobile-advisor-badge{font-size:6px!important;padding:3px 6px!important}
+body.compact .family-member-list{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  display:grid!important;
+  gap:5px!important;
+  padding:1px 1px 2px 0!important;
+}
+body.compact .family-member{
+  min-height:48px!important;
+  padding:7px 8px!important;
+  gap:7px!important;
+  border-radius:11px!important;
+}
+body.compact .member-avatar{width:31px!important;height:31px!important;border-radius:9px!important;font-size:9px!important}
+body.compact .member-info b{font-size:10px!important;line-height:1.15!important}
+body.compact .member-info small{font-size:7px!important;margin-top:1px!important}
+body.compact .member-money strong{font-size:10px!important}
+body.compact .member-money small{font-size:7px!important}
+body.compact .member-check{width:19px!important;height:19px!important;font-size:10px!important}
+body.compact .family-scope{
+  flex:0 0 auto!important;
+  max-height:38px!important;
+  overflow:hidden!important;
+  margin-top:6px!important;
+  padding:6px 7px!important;
+  font-size:7px!important;
+  line-height:1.25!important;
+  border-radius:9px!important;
+}
+/* Keep the compact selector inside the actual RAYAM preview column even when
+   the host browser viewport is desktop-sized. */
+body.compact .family-panel{right:max(10px,calc((100vw - 520px)/2 + 10px))!important;left:max(10px,calc((100vw - 520px)/2 + 10px))!important}
+@media(max-width:540px){
+  body.compact .family-panel{left:7px!important;right:7px!important;bottom:70px!important;height:min(620px,78vh)!important;max-height:min(620px,78vh)!important}
+}
+</style>
+
+<style id="rayam-v59-mobile-advisor-restored">
+/* RAYAM v5.9 — keep Investment Advisor visible in compact/mobile context.
+   The advisor becomes a dedicated, low-height second row so the Family selector
+   and contribution summary retain their primary position without hiding advisor context. */
+.compact-advisor-row{
+  display:none;
+  min-width:0;
+  align-items:center;
+  gap:8px;
+  border:1px solid var(--line);
+  background:linear-gradient(100deg,rgba(23,42,115,.055),rgba(22,185,121,.045));
+  border-radius:13px;
+  padding:7px 10px;
+  box-shadow:0 5px 14px rgba(29,50,100,.045);
+}
+.compact-advisor-avatar{
+  width:30px;height:30px;border-radius:10px;display:grid;place-items:center;
+  flex:0 0 auto;background:linear-gradient(135deg,#172a73,#16b979);
+  color:#fff;font-size:9px;font-weight:950;box-shadow:0 4px 10px rgba(23,42,115,.16);
+}
+.compact-advisor-copy{min-width:0;display:grid;gap:1px;line-height:1.1;}
+.compact-advisor-copy small{font-size:6.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);font-weight:900;}
+.compact-advisor-copy b{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.compact-advisor-copy span{font-size:7px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.compact-advisor-badge{margin-left:auto;flex:0 0 auto;padding:4px 7px;border-radius:99px;border:1px solid #bfe8d7;background:#eefaf5;color:#149866;font-size:6.5px;font-weight:900;letter-spacing:.06em;}
+.compact-advisor-action{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;flex:0 0 auto;background:#eef3ff;color:#315bea;font-size:16px;font-weight:900;}
+body.dark .compact-advisor-row{background:linear-gradient(100deg,rgba(49,91,234,.12),rgba(22,185,121,.08));border-color:#263b6b;}
+body.dark .compact-advisor-badge{background:#112d25;border-color:#1f5e49;color:#6de0b1;}
+body.premium .compact-advisor-row{background:linear-gradient(100deg,rgba(140,106,61,.10),rgba(168,115,216,.08));border-color:#4a3a4c;}
+body.premium .compact-advisor-badge{background:#211a26;border-color:#6a526e;color:#d7b5e8;}
+body.compact .household-context{
+  grid-template-columns:minmax(0,1fr) 132px!important;
+  grid-template-areas:
+    "investor contrib"
+    "advisor advisor";
+  row-gap:7px;
+}
+body.compact .household-context .context-investor{grid-area:investor;}
+body.compact .household-context .context-contrib{grid-area:contrib;}
+body.compact .household-context .compact-advisor-row{
+  display:flex!important;
+  grid-area:advisor;
+  min-height:44px;height:44px;
+}
+body.compact .household-context .context-advisor{display:none!important;}
+@media(max-width:760px){
+  .household-context{
+    grid-template-columns:minmax(0,1fr) 122px!important;
+    grid-template-areas:
+      "investor contrib"
+      "advisor advisor";
+    row-gap:7px!important;
+  }
+  .compact-advisor-row{min-height:43px;height:43px;padding:6px 8px;border-radius:12px;}
+}
+@media(max-width:390px){
+  .household-context{grid-template-columns:minmax(0,1fr) 108px!important;}
+  .compact-advisor-copy b{font-size:9px;}
+  .compact-advisor-badge{display:none;}
+}
+</style>
+
+
+<style id="rayam-v60-context-order-and-portfolio-tabs">
+/* RAYAM v6.0 — mobile context hierarchy + fully visible portfolio categories */
+
+/* MOBILE / COMPACT CONTEXT ORDER
+   1. Investment Advisor
+   2. Family / current-view selector + contribution
+*/
+body.compact .household-context{
+  grid-template-columns:minmax(0,1fr) 132px!important;
+  grid-template-areas:
+    "advisor advisor"
+    "investor contrib";
+  row-gap:7px!important;
+  padding-top:8px!important;
+  padding-bottom:8px!important;
+}
+body.compact .household-context .compact-advisor-row{
+  grid-area:advisor!important;
+  order:0!important;
+  display:flex!important;
+  min-height:44px!important;
+  height:44px!important;
+}
+body.compact .household-context .context-investor{grid-area:investor!important;order:1!important}
+body.compact .household-context .context-contrib{grid-area:contrib!important;order:2!important}
+body.compact .household-context .context-advisor{display:none!important}
+
+/* Real narrow devices follow the same hierarchy. */
+@media(max-width:760px){
+  .household-context{
+    grid-template-columns:minmax(0,1fr) 122px!important;
+    grid-template-areas:
+      "advisor advisor"
+      "investor contrib";
+    row-gap:7px!important;
+  }
+}
+@media(max-width:390px){
+  .household-context{grid-template-columns:minmax(0,1fr) 108px!important;}
+}
+
+/* PORTFOLIO: show every asset category up front on mobile/compact.
+   CSS Grid is used here instead of the previous single-line rail, so no
+   category depends on a hidden horizontal gesture or partially visible card. */
+body.compact #portfolio .portfolio-tabs-wrap{width:100%;}
+@media(max-width:760px){#portfolio .portfolio-tabs-wrap{width:100%;}}
+body.compact #portfolio .portfolio-tab-rail{width:100%;padding:0!important;}
+@media(max-width:760px){#portfolio .portfolio-tab-rail{width:100%;padding:0!important;}}
+body.compact #portfolio .portfolio-tab-nav{display:none!important;}
+@media(max-width:760px){#portfolio .portfolio-tab-nav{display:none!important;}}
+body.compact #portfolio .portfolio-tabs-wrap::before,body.compact #portfolio .portfolio-tabs-wrap::after{display:none!important;}
+@media(max-width:760px){#portfolio .portfolio-tabs-wrap::before,#portfolio .portfolio-tabs-wrap::after{display:none!important;}}
+body.compact #portfolio .section-tabs{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px!important;
+  width:100%;
+  max-width:100%;
+  overflow:visible!important;
+  padding:0!important;
+  margin:0 0 12px!important;
+  scroll-snap-type:none!important;
+  touch-action:auto!important;
+}
+@media(max-width:760px){#portfolio .section-tabs{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px!important; width:100%; max-width:100%; overflow:visible!important; padding:0!important; margin:0 0 12px!important; scroll-snap-type:none!important; touch-action:auto!important;
+}}
+body.compact #portfolio .section-tabs .tab{
+  min-width:0!important;
+  width:100%!important;
+  min-height:60px!important;
+  height:auto!important;
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:7px!important;
+  padding:8px 9px!important;
+  border-radius:14px!important;
+  white-space:normal!important;
+  text-align:left!important;
+  overflow:hidden!important;
+}
+@media(max-width:760px){#portfolio .section-tabs .tab{
+  min-width:0!important; width:100%!important; min-height:60px!important; height:auto!important; display:grid!important; grid-template-columns:34px minmax(0,1fr) auto!important; align-items:center!important; gap:7px!important; padding:8px 9px!important; border-radius:14px!important; white-space:normal!important; text-align:left!important; overflow:hidden!important;
+}}
+body.compact #portfolio .section-tabs .tab-icon{
+  width:34px!important;
+  height:34px!important;
+  border-radius:10px!important;
+}
+@media(max-width:760px){#portfolio .section-tabs .tab-icon{width:34px!important;height:34px!important;border-radius:10px!important;}}
+body.compact #portfolio .section-tabs .tab span:not(.tab-icon){
+  min-width:0;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  line-height:1.15!important;
+}
+@media(max-width:760px){#portfolio .section-tabs .tab span:not(.tab-icon){min-width:0;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.15!important;}}
+body.compact #portfolio .section-tabs .tab b{
+  flex:0 0 auto;
+}
+@media(max-width:760px){#portfolio .section-tabs .tab b{flex:0 0 auto;}}
+
+@media(max-width:390px){
+  body.compact #portfolio .section-tabs,
+  #portfolio .section-tabs{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:7px!important;
+  }
+  body.compact #portfolio .section-tabs .tab,
+  #portfolio .section-tabs .tab{
+    min-height:56px!important;
+    grid-template-columns:32px minmax(0,1fr) auto!important;
+    padding:7px 8px!important;
+  }
+  body.compact #portfolio .section-tabs .tab-icon,
+  #portfolio .section-tabs .tab-icon{
+    width:32px!important;height:32px!important;border-radius:9px!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  body.compact #portfolio .section-tabs{scroll-behavior:auto!important}
+}
+</style>
+
+
+<style id="rayam-v61-portfolio-spacing-greeting">
+/* RAYAM v6.1 — portfolio breathing room + selection-aware greeting */
+#portfolio .portfolio-tabs-wrap{
+  margin-top:26px!important;
+}
+#portfolio .section-tabs{
+  row-gap:14px!important;
+}
+body.compact #portfolio .portfolio-tabs-wrap{
+  margin-top:22px!important;
+}
+body.compact #portfolio .section-tabs{
+  row-gap:12px!important;
+}
+@media(max-width:760px){
+  #portfolio .portfolio-tabs-wrap{margin-top:20px!important;}
+  #portfolio .section-tabs{row-gap:12px!important;}
+}
+@media(max-width:390px){
+  #portfolio .portfolio-tabs-wrap{margin-top:18px!important;}
+  #portfolio .section-tabs{row-gap:10px!important;}
+}
+</style>
+</head>
+<body>
+<div class="ambient-bg" aria-hidden="true"></div>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo"><div class="logo-mark">▥</div><div><strong>RAYAM</strong><small>Wealth Today. Freedom Tomorrow.</small></div></div>
+  <nav class="nav">
+    <button class="active" data-page="overview"><span class="ico">⌂</span><span>Overview</span></button>
+    <button data-page="networth"><span class="ico">◉</span><span>Net Worth</span></button>
+    <button data-page="cashflow"><span class="ico">↗</span><span>Cash Flow</span></button>
+    <button data-page="portfolio"><span class="ico">◌</span><span>Portfolio</span></button>
+    <button data-page="goals"><span class="ico">◎</span><span>Goals</span></button>
+    <button data-page="fire"><span class="ico">♢</span><span>FIRE Plan</span></button>
+    <button data-page="liabilities"><span class="ico">↓</span><span>Liabilities</span></button>
+    <button data-page="risk"><span class="ico">◇</span><span>Insurance</span></button>
+    <button data-page="tax"><span class="ico">%</span><span>Tax</span></button>
+    <button data-page="insights"><span class="ico">✦</span><span>Insights</span></button>
+    <button data-page="profile"><span class="ico">⚙</span><span>Profile</span></button>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="fire-mini"><div style="font-size:11px;font-weight:800">Your FIRE Progress</div><div class="fire-progress" role="img" aria-label="FIRE progress 68 percent"><svg viewBox="0 0 82 82" aria-hidden="true"><circle class="track" cx="41" cy="41" r="31" pathLength="100"/><circle class="value" cx="41" cy="41" r="31" pathLength="100" transform="rotate(-90 41 41)"/><text x="41" y="46" text-anchor="middle" font-size="15" font-weight="800" fill="currentColor">68%</text></svg></div><div style="text-align:center;font-size:10px;color:var(--muted)">On track · Dec 2032</div></div>
+    <div class="switcher"><button onclick="setTheme('light')">☀</button><button onclick="setTheme('dark')">☾</button><button onclick="setTheme('premium')">✦</button></div>
+  </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <input class="search" placeholder="⌕  Search anything — portfolio, goals, tax, insurance..." oninput="searchApp(this.value)">
+  <div class="top-actions"><button class="pill investor-pill" id="investorTopBtn" type="button" aria-expanded="false" aria-controls="familyInvestorPanel">Investor · Family ▾</button><div class="pill">◔</div><div class="avatar">RK</div></div>
+  <div class="device-bar"><button id="desktopBtn" class="active" onclick="setDevice('desktop')">Desktop</button><button id="mobileBtn" onclick="setDevice('mobile')">Mobile</button></div>
+</header>
+
+<div class="household-context" id="householdContext" aria-label="Household and advisor context">
+  <div class="context-advisor">
+    <div class="context-avatar">BS</div>
+    <div class="context-meta"><small>Investment Advisor</small><b>Balaji Sundaresan</b><span>SEBI RIA · INA000012345</span></div>
+  </div>
+  <button class="context-investor" id="contextInvestorBtn" type="button" aria-expanded="false" aria-controls="familyInvestorPanel" aria-haspopup="dialog">
+    <div class="context-investor-main">
+      <div class="context-avatar" id="activeMemberAvatar">FP</div>
+      <div class="context-meta">
+        <small>Current view</small>
+        <b id="activeMemberName">Panchanan Pradan · Family</b>
+        <span id="activeMemberRole">Combined household journey · 4 members</span>
+      </div>
+    </div>
+    <div class="context-switch-control" aria-hidden="true">
+      <span class="context-switch-label">SWITCH</span>
+      <span class="context-switch-count"><i>4</i></span>
+      <span class="context-switch-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m7 10 5 5 5-5"/>
+        </svg>
+      </span>
+    </div>
+  </button>
+  <div class="context-contrib">
+    <div class="context-meta">
+      <small>Family monthly contribution</small>
+      <strong id="familyContributionValue">₹1.45 L</strong>
+      <small id="familyContributionCaption">4 members contributing</small>
+    </div>
+    <div class="contrib-visual">
+      <div class="mini-progress"><i></i></div>
+      <small style="display:block;margin-top:5px;color:var(--muted)" id="familyContributionDetail">₹85K + ₹35K + ₹15K + ₹10K</small>
+    </div>
+  </div>
+  <div class="compact-advisor-row" aria-label="Investment Advisor">
+    <span class="compact-advisor-avatar">BS</span>
+    <span class="compact-advisor-copy">
+      <small>INVESTMENT ADVISOR</small>
+      <b>Balaji Sundaresan</b>
+      <span>SEBI RIA · INA000012345</span>
+    </span>
+    <span class="compact-advisor-badge">RIA</span>
+    <span class="compact-advisor-action" aria-hidden="true">›</span>
+  </div>
+</div>
+
+<div class="family-panel" id="familyInvestorPanel" role="dialog" aria-label="Select investor or family view" aria-hidden="true">
+  <div class="family-panel-head"><div><h3>Who is on this journey?</h3><p>Select a household view. RAYAM keeps individual ownership while showing the family picture.</p></div><button class="family-close" id="familyCloseBtn" type="button" aria-label="Close investor selector">×</button></div>
+  <div class="family-summary"><div class="family-summary-card"><small>Family net worth</small><strong>₹1.24 Cr</strong><span>+18% vs last year</span></div><div class="family-summary-card"><small>Monthly contribution</small><strong>₹1.45 L</strong><span>4 contributors</span></div></div>
+  <div class="family-mobile-advisor" aria-label="Investment Advisor"><span class="family-mobile-advisor-avatar">BS</span><span class="family-mobile-advisor-copy"><small>INVESTMENT ADVISOR</small><b>Balaji Sundaresan</b><span>SEBI RIA · INA000012345</span></span><span class="family-mobile-advisor-badge">RIA</span></div>
+  <div class="family-member-list" id="familyMemberList">
+    <button class="family-member active" type="button" data-investor="family"><span class="member-avatar">FP</span><span class="member-info"><b>Panchanan Pradan · Family</b><small>Combined household · 4 members</small></span><span class="member-money"><strong>₹1.45 L</strong><small>monthly</small></span><span class="member-check">✓</span></button>
+    <button class="family-member" type="button" data-investor="self"><span class="member-avatar">PP</span><span class="member-info"><b>Panchanan Pradan</b><small>Primary investor · Individual view</small></span><span class="member-money"><strong>₹85K</strong><small>monthly</small></span><span class="member-check">✓</span></button>
+    <button class="family-member" type="button" data-investor="wife"><span class="member-avatar">W</span><span class="member-info"><b>Pradan (Wife)</b><small>Spouse · Individual view</small></span><span class="member-money"><strong>₹35K</strong><small>monthly</small></span><span class="member-check">✓</span></button>
+    <button class="family-member" type="button" data-investor="daughter"><span class="member-avatar">D</span><span class="member-info"><b>Pradan (Daughter)</b><small>Child · Individual view</small></span><span class="member-money"><strong>₹15K</strong><small>monthly</small></span><span class="member-check">✓</span></button>
+    <button class="family-member" type="button" data-investor="son"><span class="member-avatar">S</span><span class="member-info"><b>Pradan (Son)</b><small>Child · Individual view</small></span><span class="member-money"><strong>₹10K</strong><small>monthly</small></span><span class="member-check">✓</span></button>
+  </div>
+  <div class="family-scope"><b>Family view</b> combines the household picture while preserving individual ownership. Choose a member above to switch the entire RAYAM context to that journey. Demo figures are illustrative and can be replaced with connected data.</div>
+</div>
+
+<div class="content" id="rayamContent">
+<section class="page active" id="overview">
+  <div class="hero"><div class="hero-icon-field" aria-hidden="true">
+  <div class="hero-icon i1"><svg viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/><circle cx="12" cy="12" r="3.2"/></svg></div>
+  <div class="hero-icon i2"><svg viewBox="0 0 24 24"><path d="M4 18.5V9.5M10 18.5V5.5M16 18.5v-8M22 18.5V3.5"/><path d="m4 7 6-2 6 2 6-4"/></svg></div>
+  <div class="hero-icon i3"><svg viewBox="0 0 24 24"><path d="M12 3.5 14.7 9l6 .9-4.3 4.2 1 5.9-5.4-2.8-5.4 2.8 1-5.9L3.3 9.9l6-.9z"/></svg></div>
+  <div class="hero-icon i4"><svg viewBox="0 0 24 24"><path d="M12 21a8.5 8.5 0 1 0-8.5-8.5"/><path d="M3.5 16v-3.5H7"/><path d="M12 7v5l3.2 2"/></svg></div>
+  <i class="hero-spark"></i>
+</div><div class="hero-copy-badge"><i></i> RAYAM WEALTH OS · TODAY'S SIGNAL</div><h1 id="overviewGreeting">Good Morning, Panchanan &amp; Family 👋</h1><p>You are <b>6 years 3 months</b> away from your Financial Independence goal.</p><div class="hero-side"><div class="hero-quote">“A plan today, freedom tomorrow.”</div><div class="hero-date">24 Sep 2026 · Financial journey is 52% complete →</div></div></div>
+  <div class="live-widget" aria-label="RAYAM live wealth pulse">
+    <div class="live-core"><div class="live-orb"><span></span></div><div class="live-copy"><b>Wealth Pulse</b><small>Plan momentum across wealth, cash flow and FIRE readiness</small></div></div>
+    <div class="live-stat positive"><small>Net worth momentum</small><strong>+18%</strong><em>vs last year</em></div>
+    <div class="live-stat positive"><small>Monthly surplus</small><strong>₹1.45 L</strong><em>+22% trend</em></div>
+    <div class="live-stat warning"><small>Goal attention</small><strong>2</strong><em>needs review</em></div>
+    <div class="live-spark" aria-hidden="true"><svg viewBox="0 0 120 35"><defs><linearGradient id="liveArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#315bea" stop-opacity=".25"/><stop offset="1" stop-color="#315bea" stop-opacity="0"/></linearGradient></defs><path class="area" d="M2 31 C20 29 28 25 42 27 S61 18 75 20 S94 8 118 5 L118 34 L2 34Z"/><path d="M2 31 C20 29 28 25 42 27 S61 18 75 20 S94 8 118 5"/></svg></div>
+    <button class="live-refresh" onclick="refreshWealthPulse()"><i class="refresh-dot"></i><span>Refresh pulse</span></button>
+  </div>
+  <div class="widget-grid">
+    <div class="card animated-chart-card"><div class="widget-title"><div><h3>Wealth Trajectory</h3><small>Required corpus vs projected corpus</small></div><span class="pulse-badge"><i></i>Live model</span></div><div class="wealth-wave"><svg viewBox="0 0 700 125" preserveAspectRatio="none"><defs><linearGradient id="wealthArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#315bea" stop-opacity=".18"/><stop offset="1" stop-color="#315bea" stop-opacity="0"/></linearGradient></defs><path class="gridline" d="M0 100H700M0 67H700M0 34H700"/><path class="area" d="M0 105 C90 99 150 91 220 76 S360 58 440 42 S580 23 700 9 L700 112 L0 112Z"/><path class="required" d="M0 105 C90 99 150 91 220 76 S360 58 440 42 S580 23 700 9"/><path class="projected" d="M0 108 C90 105 150 100 220 92 S360 82 440 70 S580 57 700 42"/><circle class="chart-point" cx="700" cy="9" r="4"/><circle cx="700" cy="42" r="4" fill="#fff" stroke="#16b979" stroke-width="2"/></svg></div><div class="legend"><span><i class="dot" style="background:#315bea"></i>Required corpus</span><span><i class="dot" style="background:#16b979"></i>Projected corpus</span><span style="margin-left:auto">Dec 2032 target</span></div></div>
+    <div class="widget-rail"><div class="mini-live"><div class="mini-live-head"><b>Contribution rhythm</b><span>12 months</span></div><div class="mini-live-value">₹1.10 L</div><div class="mini-live-sub">average monthly investment</div><div class="mini-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="mini-live"><div class="mini-live-head"><b>Plan resilience</b><span>Scenario signal</span></div><div class="mini-live-value" style="color:var(--green)">82%</div><div class="mini-live-sub">current plan confidence</div><div class="bar" style="height:8px;margin-top:10px"><i style="width:82%;background:linear-gradient(90deg,#315bea,#16b979)"></i></div></div></div>
+  </div>
+  <div class="grid4">
+    <div class="metric" style="--accent:#315bea;--tint:#eaf0ff"><div class="metric-head"><span class="metric-icon">◉</span>Net Worth</div><h2>₹1.24 Cr</h2><span class="delta up">▲ 18% vs last year</span><div class="spark"><svg viewBox="0 0 200 40"><polyline points="0,31 20,28 42,30 62,23 83,25 104,18 126,20 150,13 175,10 200,5" fill="none" stroke="#315bea" stroke-width="3"/></svg></div></div>
+    <div class="metric" style="--accent:#16b979;--tint:#e7fbf2"><div class="metric-head"><span class="metric-icon">↗</span>Total Assets</div><h2>₹1.62 Cr</h2><span class="delta up">▲ 15% vs last year</span><div class="spark"><svg viewBox="0 0 200 40"><polyline points="0,32 22,29 45,25 63,28 83,17 105,22 127,14 150,17 173,9 200,4" fill="none" stroke="#16b979" stroke-width="3"/></svg></div></div>
+    <div class="metric" style="--accent:#ef5364;--tint:#ffedf0"><div class="metric-head"><span class="metric-icon">↓</span>Total Liabilities</div><h2>₹38.4 L</h2><span class="delta down">▼ 8% vs last year</span><div class="spark"><svg viewBox="0 0 200 40"><polyline points="0,28 20,26 42,20 62,25 82,15 105,20 126,11 150,15 174,8 200,4" fill="none" stroke="#ef5364" stroke-width="3"/></svg></div></div>
+    <div class="metric" style="--accent:#7658ef;--tint:#f0ebff"><div class="metric-head"><span class="metric-icon">♟</span>Monthly Surplus</div><h2>₹1.45 L</h2><span class="delta up">▲ 22% vs last year</span><div class="spark"><svg viewBox="0 0 200 40"><g fill="#8d54e9"><rect x="4" y="23" width="8" height="17"/><rect x="20" y="14" width="8" height="26"/><rect x="36" y="25" width="8" height="15"/><rect x="52" y="10" width="8" height="30"/><rect x="68" y="18" width="8" height="22"/><rect x="84" y="7" width="8" height="33"/><rect x="100" y="15" width="8" height="25"/><rect x="116" y="5" width="8" height="35"/><rect x="132" y="14" width="8" height="26"/><rect x="148" y="8" width="8" height="32"/><rect x="164" y="12" width="8" height="28"/><rect x="180" y="3" width="8" height="37"/></g></svg></div></div>
+  </div>
+  <div class="row row-main">
+    <div class="card"><div class="card-title"><h3>Portfolio Allocation</h3><span>By Asset Class ↗</span></div><div class="donut-wrap"><div class="donut"></div><div class="alloc-list">
+      <div class="alloc-row"><i class="dot" style="background:#315bea"></i><span>Mutual Funds</span><b>38%</b></div><div class="alloc-row"><i class="dot" style="background:#16b979"></i><span>Stocks & ETFs</span><b>18%</b></div><div class="alloc-row"><i class="dot" style="background:#ffb02e"></i><span>Real Estate</span><b>22%</b></div><div class="alloc-row"><i class="dot" style="background:#ed4c9b"></i><span>Fixed Income</span><b>8%</b></div><div class="alloc-row"><i class="dot" style="background:#8d54e9"></i><span>Gold & Metals</span><b>7%</b></div><div class="alloc-row"><i class="dot" style="background:#16b9d9"></i><span>Others</span><b>7%</b></div>
+    </div></div></div>
+    <div class="card"><div class="card-title"><h3>FIRE Journey</h3><span onclick="toast('FIRE plan opened')">View Plan →</span></div><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:28px;color:#119866">6y 3m</b><div style="font-size:10px;color:var(--muted)">Projected FIRE date<br><b style="color:var(--ink)">Dec 2032</b></div></div><div class="fire-progress fire-progress-large" role="img" aria-label="FIRE journey progress 68 percent"><svg viewBox="0 0 90 90" aria-hidden="true"><circle class="track" cx="45" cy="45" r="34" pathLength="100"/><circle class="value" cx="45" cy="45" r="34" pathLength="100" style="stroke:#16b979" transform="rotate(-90 45 45)"/><text x="45" y="50" text-anchor="middle" font-size="16" font-weight="800" fill="currentColor">68%</text></svg></div></div><div class="chart" style="height:170px"><svg viewBox="0 0 460 170"><path d="M20 145 C90 137 120 130 170 115 S270 90 320 58 S390 35 440 12 L440 150 L20 150Z" fill="#315bea18"/><path d="M20 145 C90 137 120 130 170 115 S270 90 320 58 S390 35 440 12" fill="none" stroke="#315bea" stroke-width="3"/><path d="M20 145 C90 140 120 138 170 130 S270 118 320 101 S390 85 440 66" fill="none" stroke="#16b979" stroke-width="3"/><path d="M20 150H440" stroke="#e4e9f3"/></svg></div><div class="legend"><span><i class="dot" style="background:#315bea"></i>Required corpus</span><span><i class="dot" style="background:#16b979"></i>Projected corpus</span></div></div>
+    <div class="card"><div class="card-title"><h3>Goals Progress</h3><span onclick="goto('goals')">View All →</span></div><div class="goals">
+      <div class="goal"><div class="goal-top"><span>🏔 Financial Independence</span><b>68%</b></div><div class="bar"><i style="width:68%"></i></div><div style="font-size:9px;color:var(--muted);margin-top:5px">₹3.25 Cr · Target 2032</div></div>
+      <div class="goal"><div class="goal-top"><span>🎓 Child Education</span><b>32%</b></div><div class="bar"><i style="width:32%"></i></div><div style="font-size:9px;color:var(--muted);margin-top:5px">₹28 L · Target 2031</div></div>
+      <div class="goal"><div class="goal-top"><span>🏠 Home Upgrade</span><b>46%</b></div><div class="bar"><i style="width:46%"></i></div><div style="font-size:9px;color:var(--muted);margin-top:5px">₹40 L · Target 2030</div></div>
+      <div class="goal"><div class="goal-top"><span>✈️ World Travel</span><b>24%</b></div><div class="bar"><i style="width:24%"></i></div><div style="font-size:9px;color:var(--muted);margin-top:5px">₹8 L · Target 2028</div></div>
+    </div></div>
+  </div>
+  <div class="row row-wide">
+    <div class="card insight-command" id="overviewInsightCommand">
+  <div class="insight-headline">
+    <div><h3>Analysis & Insights</h3><p>RAYAM is continuously connecting your wealth, cash flow, goals and FIRE trajectory.</p></div>
+    <div class="insight-score"><small>Plan intelligence</small><strong>82%</strong><span>↑ 4 pts this quarter</span></div>
+  </div>
+  <div class="insight-filters" role="tablist" aria-label="Insight filters">
+    <button type="button" class="insight-filter active" data-insight-filter="all" role="tab" aria-selected="true">All signals · 4</button>
+    <button type="button" class="insight-filter" data-insight-filter="attention" role="tab" aria-selected="false">Attention · 2</button>
+    <button type="button" class="insight-filter" data-insight-filter="momentum" role="tab" aria-selected="false">Momentum · 1</button>
+    <button type="button" class="insight-filter" data-insight-filter="opportunity" role="tab" aria-selected="false">Opportunity · 1</button>
+  </div>
+  <div class="insight-grid">
+    <div class="insight-queue" id="overviewInsightQueue">
+      <article class="insight-item" data-insight-type="momentum" style="--insight-color:#16b979;--insight-bg:#e9fbf3" tabindex="0">
+        <div class="insight-item-top"><div class="insight-symbol"><svg viewBox="0 0 24 24"><path d="m4 15 5-5 4 4 7-8"/><path d="M15 6h5v5"/></svg></div><div class="insight-item-copy"><b>Net worth momentum is accelerating</b><p>₹18.8L growth over the last year puts your wealth trajectory above the previous cycle.</p></div><span class="insight-meta">MOMENTUM</span></div>
+        <div class="insight-mini"><div><span>12M change</span><strong>+18%</strong></div><div><span>Signal strength</span><strong>High</strong></div></div><div class="insight-meter"><i style="--w:88%"></i></div>
+      </article>
+      <article class="insight-item" data-insight-type="attention" style="--insight-color:#ff5969;--insight-bg:#ffedf0" tabindex="0">
+        <div class="insight-item-top"><div class="insight-symbol"><svg viewBox="0 0 24 24"><path d="M12 4 21 19H3Z"/><path d="M12 9v4M12 16.5h.01"/></svg></div><div class="insight-item-copy"><b>Child education needs a funding lift</b><p>The current trajectory suggests an additional ₹15,000 monthly contribution may be needed.</p></div><span class="insight-meta">ACTION</span></div>
+        <div class="insight-mini"><div><span>Current funding</span><strong>32%</strong></div><div><span>Attention</span><strong>High</strong></div></div><div class="insight-meter"><i style="--w:32%"></i></div>
+      </article>
+      <article class="insight-item" data-insight-type="attention" style="--insight-color:#ffb02e;--insight-bg:#fff5df" tabindex="0">
+        <div class="insight-item-top"><div class="insight-symbol"><svg viewBox="0 0 24 24"><path d="M4 18h16M6 15l3-4 3 2 5-7"/><path d="M17 6h4v4"/></svg></div><div class="insight-item-copy"><b>Home loan is shaping your debt profile</b><p>52% of current liabilities are concentrated in the home loan bucket.</p></div><span class="insight-meta">REVIEW</span></div>
+        <div class="insight-mini"><div><span>Liability share</span><strong>52%</strong></div><div><span>Debt / assets</span><strong>23.7%</strong></div></div><div class="insight-meter"><i style="--w:52%"></i></div>
+      </article>
+      <article class="insight-item" data-insight-type="opportunity" style="--insight-color:#315bea;--insight-bg:#edf2ff" tabindex="0">
+        <div class="insight-item-top"><div class="insight-symbol"><svg viewBox="0 0 24 24"><path d="M12 3v18M7 7h6a3 3 0 0 1 0 6H8a3 3 0 0 0 0 6h7"/></svg></div><div class="insight-item-copy"><b>Investment allocation has room to compound</b><p>81% of assets are already in investment buckets, creating a strong base for FIRE accumulation.</p></div><span class="insight-meta">OPPORTUNITY</span></div>
+        <div class="insight-mini"><div><span>Investment share</span><strong>81%</strong></div><div><span>Portfolio XIRR</span><strong>13.8%</strong></div></div><div class="insight-meter"><i style="--w:81%"></i></div>
+      </article>
+    </div>
+    <aside class="insight-radar" aria-label="Plan intelligence radar">
+      <div class="radar-title"><b>Wealth signal map</b><span>● Updated now</span></div>
+      <div class="radar-viz"><svg viewBox="0 0 240 190" aria-hidden="true">
+        <circle class="radar-ring" cx="120" cy="95" r="74"/><circle class="radar-ring" cx="120" cy="95" r="52"/><circle class="radar-ring" cx="120" cy="95" r="30"/>
+        <path class="radar-ring" d="M120 21V169M46 95h148M68 43l104 104M172 43 68 147"/>
+        <polygon class="radar-shape" points="120,38 171,61 161,116 119,143 70,112 78,64"/>
+        <circle class="radar-dot" cx="120" cy="38" r="3.5"/><circle class="radar-dot" cx="171" cy="61" r="3.5"/><circle class="radar-dot" cx="161" cy="116" r="3.5"/><circle class="radar-dot" cx="119" cy="143" r="3.5"/><circle class="radar-dot" cx="70" cy="112" r="3.5"/><circle class="radar-dot" cx="78" cy="64" r="3.5"/>
+      </svg><div class="radar-center"><strong>82</strong><small>plan health</small></div></div>
+      <div class="insight-action"><span>4 connected signals · 2 need attention</span><button type="button" id="openInsightPage">Explore insights →</button></div>
+    </aside>
+  </div>
+</div>
+<div class="card"><div class="card-title"><h3>Cash Flow · Monthly</h3><span onclick="goto('cashflow')">Explore →</span></div><div class="cashbar"><i style="width:52%;background:#16b979"></i><i style="width:20%;background:#315bea"></i><i style="width:10%;background:#ffb02e"></i><i style="width:11%;background:#8d54e9"></i><i style="width:7%;background:#ed4c9b"></i></div><div class="cash-legend"><div>● Income<b>₹4.25 L</b></div><div>● Investments<b>₹1.10 L</b></div><div>● Lifestyle<b>₹70.8K</b></div></div></div>
+  </div>
+</section>
+
+<section class="page" id="networth"><div class="hero"><h1>Net Worth Command Center</h1><p>Understand what you own, what you owe, and how wealth is changing.</p></div>
+<div class="kpi-strip" style="margin-top:16px"><div class="mini-kpi"><small>Total Net Worth</small><strong>₹1.24 Cr</strong><span class="up">▲ 18%</span></div><div class="mini-kpi"><small>Liquid Net Worth</small><strong>₹86.5 L</strong><span class="up">▲ 12%</span></div><div class="mini-kpi"><small>Debt / Assets</small><strong>23.7%</strong><span class="up">▼ 3.1 pts</span></div><div class="mini-kpi"><small>Runway</small><strong>14.2 mo</strong><span class="up">+2.1 mo</span></div></div>
+<div class="row row-wide"><div class="card"><div class="card-title"><h3>Wealth Evolution</h3><span>2019 → 2034</span></div><div class="chart"><svg viewBox="0 0 700 260"><path d="M25 225 C95 216 130 190 185 196 S275 165 325 151 S420 130 470 103 S575 70 675 22 L675 235 L25 235Z" fill="#315bea18"/><path d="M25 225 C95 216 130 190 185 196 S275 165 325 151 S420 130 470 103 S575 70 675 22" fill="none" stroke="#315bea" stroke-width="4"/><path d="M25 235H675" stroke="#e4e9f3"/><path d="M25 180H675M25 125H675M25 70H675" stroke="#eef1f7"/></svg></div><div class="legend"><span><i class="dot" style="background:#315bea"></i>Actual / projected net worth</span><span><i class="dot" style="background:#16b979"></i>Target path</span></div></div>
+<div class="card"><div class="card-title"><h3>Net Worth Bridge</h3><span>Last 12 months</span></div><div style="display:grid;gap:10px;margin-top:18px"><div style="display:flex;justify-content:space-between"><span>Opening</span><b>₹1.05 Cr</b></div><div class="bar"><i style="width:65%;background:#315bea"></i></div><div style="display:flex;justify-content:space-between"><span>Investment gains</span><b class="up">+₹12.6L</b></div><div style="display:flex;justify-content:space-between"><span>New investments</span><b class="up">+₹8.4L</b></div><div style="display:flex;justify-content:space-between"><span>Debt reduction</span><b class="up">+₹3.1L</b></div><div style="display:flex;justify-content:space-between"><span>Consumption / other</span><b class="down">−₹3.2L</b></div><hr style="border:0;border-top:1px solid var(--line);width:100%"><div style="display:flex;justify-content:space-between;font-weight:900"><span>Closing</span><b>₹1.24 Cr</b></div></div></div></div>
+<div class="row row-wide balance-row"><div class="card balance-card">
+  <div class="card-title balance-head"><div><h3>Asset vs Liability Structure</h3><p class="balance-sub">Your balance sheet at a glance — what you own, what you owe, and what remains yours.</p></div><span class="snapshot-badge"><i></i> Current snapshot</span></div>
+  <div class="balance-hero">
+    <div class="balance-net"><span>Net worth</span><strong>₹1.24 Cr</strong><em>76.3% of assets retained</em></div>
+    <div class="balance-ratio"><div class="ratio-ring"><svg viewBox="0 0 120 120" aria-label="Debt to assets 23.7 percent"><circle cx="60" cy="60" r="48" class="ratio-track"/><circle cx="60" cy="60" r="48" class="ratio-progress"/></svg><b>23.7%</b><small>Debt / assets</small></div></div>
+  </div>
+  <div class="balance-stack" aria-label="Assets and liabilities composition">
+    <div class="stack-track"><div class="stack-assets"><span></span></div><div class="stack-liability"><span></span></div></div>
+    <div class="stack-labels"><div><i class="asset-dot"></i><span>Assets</span><b>₹1.62 Cr</b><small>100% balance sheet</small></div><div><i class="debt-dot"></i><span>Liabilities</span><b>₹38.4 L</b><small>23.7% of assets</small></div><div><i class="net-dot"></i><span>Net position</span><b>₹1.24 Cr</b><small>76.3% retained</small></div></div>
+  </div>
+  <div class="balance-breakdown">
+    <div class="break-card"><div class="break-icon asset-icon">↗</div><div><span>Asset base</span><strong>₹1.62 Cr</strong><small>Investment + property + reserves</small></div><div class="break-meter"><i style="width:81%"></i></div></div>
+    <div class="break-card"><div class="break-icon debt-icon">↓</div><div><span>Debt load</span><strong>₹38.4 L</strong><small>Home + vehicle + personal</small></div><div class="break-meter debt-meter"><i style="width:24%"></i></div></div>
+    <div class="break-card"><div class="break-icon net-icon">✦</div><div><span>Equity in balance sheet</span><strong>₹1.24 Cr</strong><small>Available after liabilities</small></div><div class="break-meter net-meter"><i style="width:76%"></i></div></div>
+  </div>
+  <div class="balance-insight"><div class="insight-pulse"></div><div><b>Balance-sheet signal</b><span>Your liabilities consume ₹23.7 for every ₹100 of assets. Reducing debt increases net worth directly.</span></div><button type="button" onclick="goto('liabilities')">Explore debt →</button></div>
+</div>
+<div class="card wealth-quality-card"><div class="card-title"><div><h3>Wealth Quality</h3><p class="balance-sub">Four structural signals behind the headline number.</p></div><span class="quality-score"><b>74</b>/100</span></div><div class="quality-orbit">
+  <div class="quality-center"><strong>Healthy</strong><small>overall structure</small></div>
+  <div class="quality-node q1"><span>💧</span><b>82%</b><small>Liquidity</small></div>
+  <div class="quality-node q2"><span>◈</span><b>74%</b><small>Diversification</small></div>
+  <div class="quality-node q3"><span>↘</span><b>62%</b><small>Debt load</small></div>
+  <div class="quality-node q4"><span>◎</span><b>68%</b><small>Goal coverage</small></div>
+</div><div class="quality-footer"><span><i class="signal-green"></i> Strong liquidity</span><span><i class="signal-orange"></i> Debt needs attention</span></div></div></div>
+</section>
+
+<section class="page" id="cashflow"><div class="hero"><h1>Cash Flow Engine</h1><p>See the money coming in, going out, getting invested, and funding your future.</p></div>
+<div class="kpi-strip" style="margin-top:16px"><div class="mini-kpi"><small>Monthly inflow</small><strong>₹4.25 L</strong><span class="up">▲ 7%</span></div><div class="mini-kpi"><small>Core expenses</small><strong>₹70.8K</strong><span>stable</span></div><div class="mini-kpi"><small>Investable surplus</small><strong>₹1.45 L</strong><span class="up">▲ 22%</span></div><div class="mini-kpi"><small>Savings rate</small><strong>34.1%</strong><span class="up">+4.8 pts</span></div></div>
+<div class="row row-wide"><div class="card"><div class="card-title"><h3>12-Month Cash Flow Map</h3><span>Income · Expense · Investment</span></div><div class="chart"><svg viewBox="0 0 700 260"><g stroke="#edf1f7"><path d="M30 210H670M30 155H670M30 100H670M30 45H670"/></g><polyline points="30,62 85,55 140,68 195,48 250,57 305,41 360,52 415,38 470,45 525,31 580,39 670,25" fill="none" stroke="#16b979" stroke-width="4"/><polyline points="30,170 85,165 140,175 195,158 250,168 305,150 360,160 415,149 470,154 525,142 580,148 670,135" fill="none" stroke="#ed4c9b" stroke-width="3"/><polyline points="30,185 85,178 140,187 195,174 250,181 305,168 360,176 415,165 470,171 525,158 580,165 670,150" fill="none" stroke="#315bea" stroke-width="3"/></svg></div><div class="legend"><span><i class="dot" style="background:#16b979"></i>Income</span><span><i class="dot" style="background:#ed4c9b"></i>Expenses</span><span><i class="dot" style="background:#315bea"></i>Investments</span></div></div>
+<div class="card"><div class="card-title"><h3>Monthly Allocation</h3><span>₹4.25 L inflow</span></div><div class="cashbar" style="height:90px"><i style="width:34%;background:#315bea"></i><i style="width:17%;background:#16b979"></i><i style="width:16%;background:#ffb02e"></i><i style="width:20%;background:#8d54e9"></i><i style="width:13%;background:#ed4c9b"></i></div><div style="display:grid;gap:9px;font-size:11px"><div>Investments <b style="float:right">₹1.45L</b></div><div>Home + utilities <b style="float:right">₹68K</b></div><div>Discretionary <b style="float:right">₹70.8K</b></div><div>Debt service <b style="float:right">₹85K</b></div></div></div></div>
+<div class="row row-wide"><div class="card"><div class="card-title"><h3>Recurring Commitments</h3><button class="primary" onclick="toast('Commitment added')">+ Add</button></div><table class="table"><tr><th>Commitment</th><th>Monthly</th><th>Type</th><th>Status</th></tr><tr><td>Home loan EMI</td><td>₹52,000</td><td>Debt</td><td><span class="tag blue">Active</span></td></tr><tr><td>Mutual fund SIPs</td><td>₹85,000</td><td>Investment</td><td><span class="tag green">On track</span></td></tr><tr><td>Insurance premiums</td><td>₹8,500</td><td>Protection</td><td><span class="tag green">Covered</span></td></tr><tr><td>Child education SIP</td><td>₹15,000</td><td>Goal</td><td><span class="tag orange">Increase</span></td></tr></table></div><div class="card"><div class="card-title"><h3>Emergency Reserve</h3><span>Target 12 months</span></div><div style="font-size:35px;font-weight:900;color:#16b979">14.2 mo</div><div class="bar" style="height:11px;margin:12px 0"><i style="width:100%;background:linear-gradient(90deg,#16b979,#16b9d9)"></i></div><small style="color:var(--muted)">₹10.1L accessible liquidity · 118% of target</small></div></div>
+</section>
+
+<section class="page" id="portfolio"><div class="hero"><h1>Portfolio Intelligence</h1><p>Move from “what do I own?” to “what role is every asset playing?”</p></div><div class="portfolio-tabs-wrap" id="portfolioTabsWrap"><button class="portfolio-tab-nav prev" id="portfolioTabPrev" type="button" aria-label="Scroll portfolio categories left">‹</button><div class="portfolio-tab-rail"><div class="section-tabs" role="tablist" aria-label="Portfolio asset classes">
+<button class="tab active" type="button" role="tab" aria-selected="true" data-asset-filter="all"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></span><span>All Assets</span><b>4</b></button>
+<button class="tab" type="button" role="tab" aria-selected="false" data-asset-filter="mutual-funds"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span><span>Mutual Funds</span><b>1</b></button>
+<button class="tab" type="button" role="tab" aria-selected="false" data-asset-filter="stocks"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16l5-5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7h4v4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span><span>Stocks & ETFs</span><b>1</b></button>
+<button class="tab" type="button" role="tab" aria-selected="false" data-asset-filter="retirement"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 8h8M8 12h8M8 16h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span>Retirement</span><b>0</b></button>
+<button class="tab" type="button" role="tab" aria-selected="false" data-asset-filter="fixed-income"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span><span>Fixed Income</span><b>1</b></button>
+<button class="tab" type="button" role="tab" aria-selected="false" data-asset-filter="gold"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16l6-10 6 10H6Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 16h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span>Gold</span><b>0</b></button>
+<button class="tab" type="button" role="tab" aria-selected="false" data-asset-filter="real-assets"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M6 10v9h12v-9M10 19v-5h4v5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span><span>Real Assets</span><b>1</b></button>
+</div></div><button class="portfolio-tab-nav next" id="portfolioTabNext" type="button" aria-label="Scroll portfolio categories right">›</button></div>
+<div class="tab-context" id="portfolioTabContext"><span class="context-dot"></span><strong>All assets</strong><span>4 mapped holdings</span><span class="context-spacer"></span><span>Tap a category to focus the portfolio</span></div>
+<div class="kpi-strip"><div class="mini-kpi"><small>Portfolio value</small><strong>₹1.62 Cr</strong></div><div class="mini-kpi"><small>Cost basis</small><strong>₹1.19 Cr</strong></div><div class="mini-kpi"><small>Portfolio XIRR</small><strong class="up">13.8%</strong></div><div class="mini-kpi"><small>Top concentration</small><strong>18.2%</strong><span class="down">Watch</span></div></div>
+<div class="row row-wide"><div class="card"><div class="card-title"><h3>Allocation vs Target</h3><span>By risk bucket</span></div><div class="chart"><svg viewBox="0 0 700 270"><g font-size="11" fill="#6b7894"><text x="30" y="35">Equity</text><text x="30" y="85">Debt</text><text x="30" y="135">Real estate</text><text x="30" y="185">Gold</text><text x="30" y="235">Cash</text></g><g><rect x="130" y="22" width="410" height="24" rx="12" fill="#edf1f8"/><rect x="130" y="22" width="330" height="24" rx="12" fill="#315bea"/><rect x="130" y="72" width="410" height="24" rx="12" fill="#edf1f8"/><rect x="130" y="72" width="190" height="24" rx="12" fill="#16b979"/><rect x="130" y="122" width="410" height="24" rx="12" fill="#edf1f8"/><rect x="130" y="122" width="175" height="24" rx="12" fill="#ffb02e"/><rect x="130" y="172" width="410" height="24" rx="12" fill="#edf1f8"/><rect x="130" y="172" width="90" height="24" rx="12" fill="#ed4c9b"/><rect x="130" y="222" width="410" height="24" rx="12" fill="#edf1f8"/><rect x="130" y="222" width="72" height="24" rx="12" fill="#8d54e9"/></g></svg></div><div class="legend"><span><i class="dot" style="background:#315bea"></i>Current</span><span><i class="dot" style="background:#b9c3d8"></i>Target range</span></div></div><div class="card"><div class="card-title"><h3>Portfolio Diagnostics</h3><span>4 signals</span></div><div class="insight" style="margin-bottom:8px"><b>Liquidity coverage</b><p>Emergency + near-term goals are covered by accessible assets.</p></div><div class="insight" style="margin-bottom:8px"><b>Concentration</b><p>Top 5 holdings represent 43% of financial assets.</p></div><div class="insight" style="margin-bottom:8px"><b>Goal mapping</b><p>92% of assets have a declared purpose.</p></div><div class="insight"><b>Tax lots</b><p>3 holdings may benefit from tax-aware rebalancing.</p></div></div></div>
+<div class="card" style="margin-top:16px"><div class="card-title"><h3>Holdings Map</h3><span id="holdingsMeta">4 mapped holdings · Last synced 2 hours ago</span></div><table class="table"><tr><th>Holding</th><th>Value</th><th>Weight</th><th>Return</th><th>Purpose</th><th>Signal</th></tr><tr data-asset="mutual-funds"><td>Equity MF — Core</td><td>₹46.2L</td><td>28.5%</td><td class="up">15.2%</td><td>FIRE</td><td><span class="tag green">Healthy</span></td></tr><tr data-asset="stocks"><td>Stocks & ETFs</td><td>₹29.2L</td><td>18.0%</td><td class="up">17.8%</td><td>Growth</td><td><span class="tag orange">Review</span></td></tr><tr data-asset="real-assets"><td>Home / Property</td><td>₹35.5L</td><td>21.9%</td><td>9.2%</td><td>Home</td><td><span class="tag blue">Mapped</span></td></tr><tr data-asset="fixed-income"><td>Fixed Income</td><td>₹13.0L</td><td>8.0%</td><td>7.1%</td><td>Safety</td><td><span class="tag green">Healthy</span></td></tr></table><div class="empty-filter" id="portfolioEmptyState" hidden><span>◌</span><strong>No mapped holdings in this category</strong><small>RAYAM will show assets here once they are mapped to this asset class.</small></div></div>
+</section>
+
+<section class="page" id="goals"><div class="hero"><h1>Goals & Funding Architecture</h1><p>Every rupee should know what future outcome it is funding.</p></div><div class="kpi-strip"><div class="mini-kpi"><small>Total goal value</small><strong>₹4.01 Cr</strong></div><div class="mini-kpi"><small>Funded today</small><strong>₹1.73 Cr</strong></div><div class="mini-kpi"><small>Monthly allocation</small><strong>₹1.10 L</strong></div><div class="mini-kpi"><small>Goals at risk</small><strong class="down">2</strong></div></div>
+<div class="row row-wide"><div class="card"><div class="card-title"><h3>Goal Funding Trajectory</h3><span>Target vs projected funding</span></div><div class="chart"><svg viewBox="0 0 700 270"><path d="M30 230 C130 205 180 185 250 160 S380 115 460 82 S590 45 670 18" fill="none" stroke="#315bea" stroke-width="4" stroke-dasharray="8 7"/><path d="M30 235 C120 225 190 208 260 193 S380 160 460 139 S580 115 670 94" fill="none" stroke="#16b979" stroke-width="4"/><path d="M30 245H670" stroke="#e5eaf3"/></svg></div><div class="legend"><span><i class="dot" style="background:#315bea"></i>Required funding</span><span><i class="dot" style="background:#16b979"></i>Projected funding</span></div></div><div class="card"><div class="card-title"><h3>Goal Diagnostics</h3><span>Prioritised</span></div><div class="goals"><div class="goal"><div class="goal-top"><span>Financial Independence</span><b class="up">On track</b></div><div class="bar"><i style="width:68%"></i></div></div><div class="goal"><div class="goal-top"><span>Child Education</span><b class="down">Shortfall</b></div><div class="bar"><i style="width:32%"></i></div></div><div class="goal"><div class="goal-top"><span>Home Upgrade</span><b class="up">On track</b></div><div class="bar"><i style="width:46%"></i></div></div><div class="goal"><div class="goal-top"><span>World Travel</span><b style="color:#f19a35">Flexible</b></div><div class="bar"><i style="width:24%"></i></div></div></div></div></div>
+<div class="card" style="margin-top:16px"><div class="card-title"><h3>Goal Timeline</h3><button class="primary" onclick="openGoal()">+ Add Goal</button></div><div class="timeline"><div><i></i><b>2027<br>Travel</b></div><div><i style="background:#ffb02e"></i><b>2028<br>Liquidity</b></div><div><i style="background:#16b979"></i><b>2029<br>Home</b></div><div><i></i><b>2030<br>Education</b></div><div><i style="background:#8d54e9"></i><b>2031<br>Education</b></div><div><i style="background:#16b979"></i><b>2032<br>FIRE</b></div><div><i style="background:#315bea"></i><b>2034<br>Legacy</b></div></div></div>
+</section>
+
+<section class="page" id="fire"><div class="hero"><h1>FIRE Plan · Financial Independence</h1><p>Model accumulation, retirement income, sequence risk, and the trade-offs between now and later.</p></div><div class="kpi-strip"><div class="mini-kpi"><small>Current FIRE corpus</small><strong>₹1.17 Cr</strong></div><div class="mini-kpi"><small>Required corpus</small><strong>₹3.25 Cr</strong></div><div class="mini-kpi"><small>Projected FIRE</small><strong>Dec 2032</strong></div><div class="mini-kpi"><small>Plan success</small><strong class="up">82%</strong></div></div>
+<div class="row row-wide"><div class="card"><div class="card-title"><h3>Retirement Projection · Percentile Fan</h3><span>Illustrative simulation</span></div><div class="fan"><svg viewBox="0 0 700 300"><path d="M30 260 C130 245 200 225 280 190 S430 130 670 35 L670 145 C510 185 410 215 300 245 S140 275 30 275Z" fill="#315bea18"/><path d="M30 265 C150 255 230 235 310 205 S470 150 670 70" fill="none" stroke="#315bea" stroke-width="4"/><path d="M30 270 C150 263 230 255 310 245 S470 225 670 210" fill="none" stroke="#ed4c9b" stroke-width="3"/><path d="M30 255 C150 238 230 200 310 160 S470 95 670 25" fill="none" stroke="#16b979" stroke-width="3"/><path d="M30 280H670" stroke="#e5eaf3"/></svg></div><div class="legend"><span><i class="dot" style="background:#16b979"></i>Optimistic</span><span><i class="dot" style="background:#315bea"></i>Median path</span><span><i class="dot" style="background:#ed4c9b"></i>Stress path</span></div></div><div class="card"><div class="card-title"><h3>FIRE Styles</h3><span>Compare assumptions</span></div><div class="scenario-grid"><div class="scenario"><h4>Lean FIRE</h4><div class="score">₹2.35 Cr</div><small>Lower annual spend</small></div><div class="scenario"><h4>Core FIRE</h4><div class="score">₹3.25 Cr</div><small>Current lifestyle</small></div><div class="scenario"><h4>Fat FIRE</h4><div class="score">₹4.80 Cr</div><small>Higher lifestyle buffer</small></div></div><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><b style="font-size:12px">Sensitivity levers</b><label style="font-size:10px;color:var(--muted);display:block;margin-top:12px">Monthly investment · ₹1.45L</label><input class="slider" type="range" min="50000" max="250000" value="145000" oninput="toast('Projected FIRE updates with your assumption')"><label style="font-size:10px;color:var(--muted);display:block;margin-top:12px">Retirement age · 47</label><input class="slider" type="range" min="40" max="60" value="47" oninput="toast('Scenario recalculated')"></div></div>
+<div class="card" style="margin-top:16px"><div class="card-title"><h3>Retirement Income Stack</h3><span>Age 47 → 90</span></div><table class="table"><tr><th>Income source</th><th>Start</th><th>Annual</th><th>Role</th><th>Risk</th></tr><tr><td>Portfolio withdrawals</td><td>47</td><td>₹9.1L</td><td>Core income</td><td><span class="tag orange">Sequence</span></td></tr><tr><td>EPF / NPS / pension</td><td>60</td><td>₹4.2L</td><td>Later-life floor</td><td><span class="tag green">Stable</span></td></tr><tr><td>Rental / other income</td><td>47</td><td>₹2.4L</td><td>Supplement</td><td><span class="tag blue">Variable</span></td></tr></table></div>
+</section>
+
+<section class="page" id="liabilities"><div class="hero"><h1>Liability & Debt Control</h1><p>See debt as a timeline, not just an outstanding balance.</p></div><div class="kpi-strip"><div class="mini-kpi"><small>Total liabilities</small><strong>₹38.4 L</strong></div><div class="mini-kpi"><small>Debt / assets</small><strong>23.7%</strong></div><div class="mini-kpi"><small>Monthly debt service</small><strong>₹85K</strong></div><div class="mini-kpi"><small>Debt-free target</small><strong>2033</strong></div></div>
+<div class="card" style="margin-top:16px"><div class="card-title"><h3>Debt Amortisation</h3><span>Balance trajectory</span></div><div class="chart"><svg viewBox="0 0 900 260"><path d="M30 35 C150 60 230 85 330 115 S500 170 650 210 S790 230 870 242" fill="none" stroke="#ef5364" stroke-width="5"/><path d="M30 242H870" stroke="#e5eaf3"/></svg></div></div>
+<div class="card" style="margin-top:16px"><div class="card-title"><h3>Active Liabilities</h3><button class="primary" onclick="toast('Loan form opened')">+ Add Liability</button></div><table class="table"><tr><th>Liability</th><th>Outstanding</th><th>Rate</th><th>EMI</th><th>End</th><th>Signal</th></tr><tr><td>Home Loan</td><td>₹31.2L</td><td>8.4%</td><td>₹52K</td><td>2033</td><td><span class="tag orange">Monitor</span></td></tr><tr><td>Vehicle Loan</td><td>₹4.8L</td><td>9.2%</td><td>₹14K</td><td>2029</td><td><span class="tag blue">Normal</span></td></tr><tr><td>Personal Loan</td><td>₹2.4L</td><td>11.8%</td><td>₹19K</td><td>2028</td><td><span class="tag red">Prioritise</span></td></tr></table></div></section>
+
+<section class="page" id="risk"><div class="hero"><h1>Risk, Protection & Resilience</h1><p>A strong FIRE plan needs liquidity, protection, and the ability to absorb shocks.</p></div><div class="risk-grid" style="margin-top:16px"><div class="risk-card"><div class="risk-ring"><b>82</b></div><b>Financial resilience</b><p style="font-size:10px;color:var(--muted)">Strong liquidity buffer.</p></div><div class="risk-card"><div class="risk-ring" style="background:conic-gradient(#ffb02e 0 61%,#e8edf5 61%)"><b>61</b></div><b>Protection coverage</b><p style="font-size:10px;color:var(--muted)">Life cover gap detected.</p></div><div class="risk-card"><div class="risk-ring" style="background:conic-gradient(#315bea 0 74%,#e8edf5 74%)"><b>74</b></div><b>Risk alignment</b><p style="font-size:10px;color:var(--muted)">Portfolio mostly aligned.</p></div><div class="risk-card"><div class="risk-ring" style="background:conic-gradient(#ed4c9b 0 68%,#e8edf5 68%)"><b>68</b></div><b>Goal resilience</b><p style="font-size:10px;color:var(--muted)">Two goals need action.</p></div></div>
+<div class="row row-wide"><div class="card"><div class="card-title"><h3>Insurance Inventory</h3><button class="primary" onclick="toast('Insurance added')">+ Add</button></div><table class="table"><tr><th>Cover</th><th>Amount</th><th>Premium</th><th>Renewal</th><th>Gap</th></tr><tr><td>Term Life</td><td>₹1.0 Cr</td><td>₹18K/yr</td><td>May</td><td><span class="tag red">₹75L</span></td></tr><tr><td>Health</td><td>₹15L</td><td>₹24K/yr</td><td>Aug</td><td><span class="tag green">Covered</span></td></tr><tr><td>Personal Accident</td><td>₹50L</td><td>₹8K/yr</td><td>Nov</td><td><span class="tag orange">Review</span></td></tr></table></div><div class="card"><div class="card-title"><h3>Risk Profile</h3><span>Current</span></div><div style="display:grid;gap:13px"><div><small>Capacity to absorb loss</small><div class="bar"><i style="width:78%;background:#315bea"></i></div></div><div><small>Willingness to take risk</small><div class="bar"><i style="width:68%;background:#8d54e9"></i></div></div><div><small>Liquidity requirement</small><div class="bar"><i style="width:42%;background:#16b979"></i></div></div><div><small>Time horizon</small><div class="bar"><i style="width:88%;background:#16b9d9"></i></div></div></div></div></div></section>
+
+<section class="page" id="tax"><div class="hero"><h1>Tax Intelligence</h1><p>Bring tax consequences into portfolio, withdrawal, and goal decisions instead of treating tax as a year-end task.</p></div><div class="kpi-strip"><div class="mini-kpi"><small>Unrealised gains</small><strong>₹24.8 L</strong></div><div class="mini-kpi"><small>Realised gains</small><strong>₹4.2 L</strong></div><div class="mini-kpi"><small>Interest + dividends</small><strong>₹2.7 L</strong></div><div class="mini-kpi"><small>Tax-sensitive assets</small><strong>₹38 L</strong></div></div>
+<div class="row row-wide"><div class="card"><div class="card-title"><h3>Tax Exposure by Asset</h3><span>Illustrative</span></div><div class="chart"><svg viewBox="0 0 700 260"><rect x="70" y="50" width="70" height="160" rx="10" fill="#315bea"/><rect x="190" y="92" width="70" height="118" rx="10" fill="#16b979"/><rect x="310" y="120" width="70" height="90" rx="10" fill="#ffb02e"/><rect x="430" y="145" width="70" height="65" rx="10" fill="#ed4c9b"/><rect x="550" y="168" width="70" height="42" rx="10" fill="#8d54e9"/><g fill="#6b7894" font-size="10"><text x="73" y="232">Equity</text><text x="190" y="232">MF</text><text x="308" y="232">Property</text><text x="428" y="232">Debt</text><text x="548" y="232">Other</text></g></svg></div></div><div class="card"><div class="card-title"><h3>Withdrawal Strategy</h3><span>FIRE phase</span></div><div class="insight" style="margin-bottom:9px"><b>Bucket 1 · Cash</b><p>Cover near-term spending without selling growth assets.</p></div><div class="insight" style="margin-bottom:9px"><b>Bucket 2 · Debt / stable</b><p>Use for medium-horizon goals and sequence protection.</p></div><div class="insight"><b>Bucket 3 · Growth</b><p>Long-duration assets remain invested for later years.</p></div></div></div>
+<div class="card" style="margin-top:16px"><div class="card-title"><h3>India Planning Checklist</h3><span>Rule-aware design</span></div><div class="insights"><div class="insight"><b>Capital gains</b><p>Track holding periods and realised gains by lot.</p></div><div class="insight"><b>NPS / EPF</b><p>Model access timing and retirement-income role.</p></div><div class="insight"><b>Tax regime</b><p>Keep assumptions versioned by assessment year.</p></div><div class="insight"><b>Documentation</b><p>Maintain source data for each tax-sensitive decision.</p></div></div></div></section>
+
+<section class="page" id="insights"><div class="hero"><h1>Insights & Decision Queue</h1><p>RAYAM turns financial data into a prioritised list of things worth reviewing.</p></div><div class="row row-wide"><div class="card"><div class="card-title"><h3>What needs attention?</h3><span>7 signals</span></div><div class="insights" style="grid-template-columns:1fr 1fr"><div class="insight"><div class="big">⚠</div><b>Education goal shortfall</b><p>Increase monthly allocation by ₹15K or move the target date.</p><button class="ghost" onclick="toast('Goal scenario opened')">Model</button></div><div class="insight"><div class="big">↘</div><b>Personal loan rate</b><p>Highest-cost debt should be reviewed against available surplus.</p><button class="ghost" onclick="goto('liabilities')">Review</button></div><div class="insight"><div class="big">◌</div><b>Portfolio concentration</b><p>Top holdings exceed the preferred concentration band.</p><button class="ghost" onclick="goto('portfolio')">Inspect</button></div><div class="insight"><div class="big">◇</div><b>Life cover gap</b><p>Protection inventory indicates a coverage gap.</p><button class="ghost" onclick="goto('risk')">Inspect</button></div></div></div><div class="card"><div class="card-title"><h3>Plan Confidence</h3><span>82%</span></div><div style="font-size:58px;font-weight:950;color:#16b979;margin:25px 0 5px">82%</div><p style="font-size:11px;color:var(--muted)">Confidence is built from data completeness, goal coverage, liquidity, debt load, portfolio alignment and scenario resilience.</p><div class="bar" style="height:13px"><i style="width:82%;background:linear-gradient(90deg,#315bea,#16b979)"></i></div></div></div>
+<div class="card" style="margin-top:16px"><div class="card-title"><h3>Ask RAYAM</h3><span>Context-aware assistant</span></div><div style="background:#f5f7fd;border-radius:14px;padding:16px;color:#63718c;font-size:12px">Try: “What happens to my FIRE date if I increase SIP by ₹20,000?”</div><div style="display:flex;gap:8px;margin-top:10px"><button class="primary" onclick="toast('Scenario analysis started')">Run Scenario</button><button class="ghost" onclick="toast('Recommendation generated')">Explain my plan</button></div></div></section>
+
+<section class="page" id="profile"><div class="hero"><h1>Profile & Planning Setup</h1><p>Control the assumptions, household context, advisor relationship, and data sources behind your plan.</p></div><div class="profile-grid" style="margin-top:16px"><div class="card"><div class="card-title"><h3>Planning Assumptions</h3><span>Editable</span></div><div class="form"><label>Current age</label><input value="41"><label>Target FIRE age</label><input value="47"><label>Annual lifestyle expense</label><input value="₹9,10,000"><label>Expected long-term return</label><input value="10.5%"><label>Inflation assumption</label><input value="6%"><button class="primary" onclick="toast('Assumptions saved')">Save assumptions</button></div></div><div class="card"><div class="card-title"><h3>Data & Governance</h3><span>Connected</span></div><table class="table"><tr><td>Portfolio accounts</td><td><span class="tag green">6 synced</span></td></tr><tr><td>Bank / cash flow</td><td><span class="tag green">Connected</span></td></tr><tr><td>Insurance</td><td><span class="tag orange">Manual</span></td></tr><tr><td>Tax data</td><td><span class="tag orange">Review</span></td></tr><tr><td>Last full refresh</td><td>24 Sep 2026 · 09:42</td></tr></table><button class="ghost" onclick="toast('Export prepared')">Export plan</button></div></div></section>
+
+<div id="modal" style="display:none;position:fixed;inset:0;background:#07112688;backdrop-filter:blur(5px);z-index:50;align-items:center;justify-content:center"><div class="card" style="width:min(430px,92vw)"><div class="card-title"><h3>Add Goal</h3><button class="ghost" onclick="closeModal()">×</button></div><div class="form"><label>Goal name</label><input id="goalName" placeholder="e.g. Education"><label>Target amount</label><input placeholder="₹50,00,000"><label>Target year</label><input placeholder="2032"><button class="primary" onclick="closeModal();toast('Goal added to your funding architecture')">Add Goal</button></div></div></div>
+
+</div>
+<nav class="mobile-nav" id="mobileNav" aria-label="Primary mobile navigation">
+  <button class="mobile-tab active" data-page="overview" aria-label="Home" aria-current="page">
+    <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 10.7 12 3.8l8.5 6.9v9.1a1.4 1.4 0 0 1-1.4 1.4H4.9a1.4 1.4 0 0 1-1.4-1.4z"/><path d="M9 21.2v-6.4h6v6.4"/></svg></span>
+    <span>Home</span>
+  </button>
+  <button class="mobile-tab" data-page="portfolio" aria-label="Portfolio">
+    <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19.5V10"/><path d="M10 19.5V5"/><path d="M16 19.5v-7"/><path d="M22 19.5V3"/></svg></span>
+    <span>Portfolio</span>
+  </button>
+  <button class="mobile-tab" data-page="goals" aria-label="Goals">
+    <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/><path d="m16.8 7.2 2.3-2.3"/></svg></span>
+    <span>Goals</span>
+  </button>
+  <button class="mobile-tab" data-page="fire" aria-label="FIRE Plan">
+    <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12.1 21c4.2 0 7.4-2.8 7.4-6.7 0-3.1-1.8-5.1-4.1-7.6.1 2.2-.6 3.7-1.9 4.7.1-3.9-1.5-6.6-4.7-8.7.5 3.9-3 5.3-3 9.2C5.8 17.3 8.3 21 12.1 21Z"/><path d="M9.4 16.1c0-1.4 1-2.5 2.4-3.7-.1 2 .6 2.7 1.5 3.5.5.5.8 1.1.8 1.8 0 1.1-.9 2-2.2 2s-2.5-1.2-2.5-3.6Z"/></svg></span>
+    <span>FIRE</span>
+  </button>
+  <button class="mobile-tab more-tab" id="moreNavBtn" type="button" aria-expanded="false" aria-label="More sections">
+    <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></span>
+    <span>More</span>
+  </button>
+</nav>
+<div class="mobile-more-menu" id="mobileMoreMenu" role="menu" aria-label="More RAYAM sections">
+  <div class="more-menu-title"><span>More sections</span><button type="button" class="more-close" id="moreCloseBtn" aria-label="Close">×</button></div>
+  <button role="menuitem" data-more-page="networth"><span class="menu-icon">◉</span><span><b>Net Worth</b><small>Assets, liabilities & wealth quality</small></span><i>›</i></button>
+  <button role="menuitem" data-more-page="cashflow"><span class="menu-icon">↗</span><span><b>Cash Flow</b><small>Income, spending & surplus</small></span><i>›</i></button>
+  <button role="menuitem" data-more-page="liabilities"><span class="menu-icon">↓</span><span><b>Liabilities</b><small>Loans & repayment plan</small></span><i>›</i></button>
+  <button role="menuitem" data-more-page="risk"><span class="menu-icon">◇</span><span><b>Insurance</b><small>Protection & resilience</small></span><i>›</i></button>
+  <button role="menuitem" data-more-page="tax"><span class="menu-icon">%</span><span><b>Tax</b><small>Tax exposure & withdrawal planning</small></span><i>›</i></button>
+  <button role="menuitem" data-more-page="insights"><span class="menu-icon">✦</span><span><b>Insights</b><small>Recommendations & attention queue</small></span><i>›</i></button>
+  <button role="menuitem" data-more-page="profile"><span class="menu-icon">⚙</span><span><b>Profile & Settings</b><small>Planning assumptions & preferences</small></span><i>›</i></button>
+</div>
+</main>
+</div>
+<script>
+const pages=[...document.querySelectorAll('.page')];
+const navs=[...document.querySelectorAll('[data-page]')];
+function goto(id){
+  const target=document.getElementById(id) || document.getElementById('overview');
+  const targetId=target.id;
+  const moreIds=['networth','cashflow','liabilities','risk','tax','insights','profile'];
+  const isMore=moreIds.includes(targetId);
+  pages.forEach(p=>p.classList.toggle('active',p.id===targetId));
+  navs.forEach(n=>n.classList.toggle('active',n.dataset.page===targetId));
+  const moreBtnEl=document.getElementById('moreNavBtn');
+  if(moreBtnEl){moreBtnEl.classList.toggle('more-active',isMore);moreBtnEl.setAttribute('aria-expanded','false');}
+  document.querySelectorAll('[data-more-page]').forEach(n=>n.classList.toggle('active',n.dataset.morePage===targetId));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+navs.forEach(n=>n.addEventListener('click',()=>goto(n.dataset.page)));
+const moreBtn=document.getElementById('moreNavBtn');
+const moreMenu=document.getElementById('mobileMoreMenu');
+function closeMore(){if(moreMenu) moreMenu.style.display='none';if(moreBtn) moreBtn.setAttribute('aria-expanded','false');}
+function toggleMore(){if(!moreMenu) return; const open=getComputedStyle(moreMenu).display!=='none'; moreMenu.style.display=open?'none':'block'; if(moreBtn) moreBtn.setAttribute('aria-expanded',String(!open));}
+if(moreBtn) moreBtn.addEventListener('click',e=>{e.stopPropagation();toggleMore();});
+const moreCloseBtn=document.getElementById('moreCloseBtn');
+if(moreCloseBtn) moreCloseBtn.addEventListener('click',closeMore);
+if(moreMenu){
+  moreMenu.querySelectorAll('[data-more-page]').forEach(btn=>btn.addEventListener('click',()=>{goto(btn.dataset.morePage);closeMore();}));
+}
+document.addEventListener('click',e=>{if(moreMenu && moreBtn && !moreMenu.contains(e.target) && !moreBtn.contains(e.target)) closeMore();});
+goto('overview');
+
+// Portfolio asset-class tabs: interactive, keyboard-friendly and content-aware.
+const portfolioTabs=[...document.querySelectorAll('.section-tabs .tab[data-asset-filter]')];
+const portfolioRows=[...document.querySelectorAll('#portfolio .table tr[data-asset]')];
+const portfolioContext=document.getElementById('portfolioTabContext');
+const holdingsMeta=document.getElementById('holdingsMeta');
+const portfolioEmpty=document.getElementById('portfolioEmptyState');
+const assetLabels={
+  'all':'All assets','mutual-funds':'Mutual funds','stocks':'Stocks & ETFs','retirement':'Retirement','fixed-income':'Fixed income','gold':'Gold','real-assets':'Real assets'
+};
+function setPortfolioFilter(filter){
+  portfolioTabs.forEach(tab=>{
+    const active=tab.dataset.assetFilter===filter;
+    tab.classList.toggle('active',active);
+    tab.setAttribute('aria-selected',String(active));
+    tab.tabIndex=active?0:-1;
+  });
+  let shown=0;
+  portfolioRows.forEach(row=>{
+    const visible=filter==='all'||row.dataset.asset===filter;
+    row.hidden=!visible;
+    if(visible) shown++;
+  });
+  if(portfolioContext){portfolioContext.innerHTML='<span class="context-dot"></span><strong>'+assetLabels[filter]+'</strong><span>'+shown+' mapped holding'+(shown===1?'':'s')+'</span><span class="context-spacer"></span><span>Tap a category to focus the portfolio</span>'}
+  if(holdingsMeta) holdingsMeta.textContent=shown+' mapped holding'+(shown===1?'':'s')+' · Last synced 2 hours ago';
+  if(portfolioEmpty) portfolioEmpty.hidden=shown!==0;
+  const activeTab=portfolioTabs.find(t=>t.dataset.assetFilter===filter);
+  if(activeTab && portfolioTabRail) activeTab.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest',inline:'nearest'});
+  requestAnimationFrame(updatePortfolioRail);
+}
+portfolioTabs.forEach((tab,index)=>{
+  tab.addEventListener('click',()=>setPortfolioFilter(tab.dataset.assetFilter));
+  tab.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key==='ArrowLeft'||e.key==='ArrowUp'){
+      e.preventDefault();
+      const dir=(e.key==='ArrowRight'||e.key==='ArrowDown')?1:-1;
+      const next=(index+dir+portfolioTabs.length)%portfolioTabs.length;
+      portfolioTabs[next].focus();
+      setPortfolioFilter(portfolioTabs[next].dataset.assetFilter);
+    }
+    if(e.key==='Home'){e.preventDefault();portfolioTabs[0].focus();setPortfolioFilter(portfolioTabs[0].dataset.assetFilter)}
+    if(e.key==='End'){e.preventDefault();portfolioTabs[portfolioTabs.length-1].focus();setPortfolioFilter(portfolioTabs[portfolioTabs.length-1].dataset.assetFilter)}
+  });
+});
+// v5.5 — portfolio category rail controls.
+const portfolioTabsWrap=document.getElementById('portfolioTabsWrap');
+const portfolioTabRail=document.querySelector('#portfolioTabsWrap .section-tabs');
+const portfolioTabPrev=document.getElementById('portfolioTabPrev');
+const portfolioTabNext=document.getElementById('portfolioTabNext');
+
+function updatePortfolioRail(){
+  if(!portfolioTabRail || !portfolioTabsWrap) return;
+  const maxScroll=Math.max(0,portfolioTabRail.scrollWidth-portfolioTabRail.clientWidth);
+  const left=portfolioTabRail.scrollLeft;
+  const canLeft=left>3;
+  const canRight=left<maxScroll-3;
+  portfolioTabsWrap.classList.toggle('can-left',canLeft);
+  portfolioTabsWrap.classList.toggle('can-right',canRight);
+  if(portfolioTabPrev) portfolioTabPrev.disabled=!canLeft;
+  if(portfolioTabNext) portfolioTabNext.disabled=!canRight;
+}
+function scrollPortfolioRail(direction){
+  if(!portfolioTabRail) return;
+  const distance=Math.max(190,Math.round(portfolioTabRail.clientWidth*.72));
+  portfolioTabRail.scrollBy({
+    left:direction*distance,
+    behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'
+  });
+}
+portfolioTabPrev?.addEventListener('click',()=>scrollPortfolioRail(-1));
+portfolioTabNext?.addEventListener('click',()=>scrollPortfolioRail(1));
+portfolioTabRail?.addEventListener('scroll',updatePortfolioRail,{passive:true});
+window.addEventListener('resize',updatePortfolioRail);
+portfolioTabRail?.addEventListener('wheel',e=>{
+  if(!portfolioTabRail || Math.abs(e.deltaY)<=Math.abs(e.deltaX)) return;
+  const max=portfolioTabRail.scrollWidth-portfolioTabRail.clientWidth;
+  if(max<=0) return;
+  e.preventDefault();
+  portfolioTabRail.scrollLeft+=e.deltaY;
+},{passive:false});
+
+setPortfolioFilter('all');
+requestAnimationFrame(updatePortfolioRail);
+
+function setTheme(t, announce=true){
+  document.body.classList.remove('dark','premium');
+  if(t==='dark' || t==='premium') document.body.classList.add(t);
+  try{localStorage.setItem('rayamTheme',t)}catch(e){}
+  if(announce) toast(t.charAt(0).toUpperCase()+t.slice(1)+' theme applied');
+}
+(function(){
+  let t='light';
+  try{t=localStorage.getItem('rayamTheme') || 'light'}catch(e){}
+  setTheme(t,false);
+})();
+function setDevice(mode){
+  const desktop=document.getElementById('desktopBtn');
+  const mobile=document.getElementById('mobileBtn');
+  if(desktop) desktop.classList.toggle('active',mode==='desktop');
+  if(mobile) mobile.classList.toggle('active',mode==='mobile');
+  document.body.classList.toggle('compact',mode==='mobile');
+  toast(mode==='mobile'?'Mobile preview enabled':'Desktop preview enabled');
+}
+
+// v5.3 — persistent household investor context
+const investorProfiles={
+  family:{name:'Panchanan Pradan · Family',role:'Combined household journey · 4 members',avatar:'FP',contribution:'₹1.45 L',caption:'4 members contributing',detail:'₹85K + ₹35K + ₹15K + ₹10K',greeting:'Panchanan & Family'},
+  self:{name:'Panchanan Pradan',role:'Primary investor · Individual view',avatar:'PP',contribution:'₹85K',caption:'Primary investor contribution',detail:'Individual monthly contribution',greeting:'Panchanan'},
+  wife:{name:'Pradan (Wife)',role:'Spouse · Individual view',avatar:'W',contribution:'₹35K',caption:'Spouse contribution',detail:'Individual monthly contribution',greeting:'Pradan (Wife)'},
+  daughter:{name:'Pradan (Daughter)',role:'Child · Individual view',avatar:'D',contribution:'₹15K',caption:'Daughter contribution',detail:'Individual monthly contribution',greeting:'Pradan (Daughter)'},
+  son:{name:'Pradan (Son)',role:'Child · Individual view',avatar:'S',contribution:'₹10K',caption:'Son contribution',detail:'Individual monthly contribution',greeting:'Pradan (Son)'}
+};
+let activeInvestor='family';
+const familyPanel=document.getElementById('familyInvestorPanel');
+const investorTopBtn=document.getElementById('investorTopBtn');
+const contextInvestorBtn=document.getElementById('contextInvestorBtn');
+const familyCloseBtn=document.getElementById('familyCloseBtn');
+function openInvestorPanel(){
+  if(!familyPanel)return;
+  familyPanel.classList.add('open');
+  familyPanel.setAttribute('aria-hidden','false');
+  investorTopBtn?.setAttribute('aria-expanded','true');
+  contextInvestorBtn?.setAttribute('aria-expanded','true');
+  contextInvestorBtn?.classList.add('is-open');
+  const active=familyPanel.querySelector('.family-member.active');
+  setTimeout(()=>active?.focus({preventScroll:true}),0);
+}
+function closeInvestorPanel(){
+  if(!familyPanel)return;
+  familyPanel.classList.remove('open');
+  familyPanel.setAttribute('aria-hidden','true');
+  investorTopBtn?.setAttribute('aria-expanded','false');
+  contextInvestorBtn?.setAttribute('aria-expanded','false');
+  contextInvestorBtn?.classList.remove('is-open');
+}
+function toggleInvestorPanel(){if(!familyPanel)return;familyPanel.classList.contains('open')?closeInvestorPanel():openInvestorPanel()}
+function selectInvestor(key){
+  const profile=investorProfiles[key]||investorProfiles.family; activeInvestor=key;
+  document.querySelectorAll('.family-member').forEach(b=>b.classList.toggle('active',b.dataset.investor===key));
+  const name=document.getElementById('activeMemberName'),role=document.getElementById('activeMemberRole'),avatar=document.getElementById('activeMemberAvatar'),val=document.getElementById('familyContributionValue'),cap=document.getElementById('familyContributionCaption'),detail=document.getElementById('familyContributionDetail');
+  if(name)name.textContent=profile.name;if(role)role.textContent=profile.role;if(avatar)avatar.textContent=profile.avatar;if(val)val.textContent=profile.contribution;if(cap)cap.textContent=profile.caption;if(detail)detail.textContent=profile.detail;
+  const greeting=document.getElementById('overviewGreeting');
+  if(greeting) greeting.textContent='Good Morning, '+(profile.greeting||profile.name.split(' · ')[0])+' 👋';
+  if(investorTopBtn)investorTopBtn.textContent=key==='family'?'Investor · Family ▾':'Investor · '+profile.name.split(' · ')[0]+' ▾';
+  document.querySelector('.context-contrib .mini-progress i')?.style.setProperty('width',key==='family'?'72%':key==='self'?'58%':key==='wife'?'38%':key==='daughter'?'22%':'15%');
+  closeInvestorPanel(); toast(key==='family'?'Family view selected':profile.name+' selected');
+  // Give the overview a lightweight contextual cue without destroying the shared family plan architecture.
+  const overview=document.getElementById('overview'); if(overview) overview.dataset.investor=key;
+}
+[investorTopBtn,contextInvestorBtn].forEach(btn=>btn?.addEventListener('click',e=>{e.stopPropagation();toggleInvestorPanel();}));
+familyCloseBtn?.addEventListener('click',closeInvestorPanel);
+document.querySelectorAll('.family-member').forEach(btn=>btn.addEventListener('click',()=>selectInvestor(btn.dataset.investor)));
+document.addEventListener('click',e=>{if(familyPanel?.classList.contains('open')&&!familyPanel.contains(e.target)&&!investorTopBtn?.contains(e.target)&&!contextInvestorBtn?.contains(e.target))closeInvestorPanel()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeInvestorPanel()});
+selectInvestor('family');
+
+function toast(msg){let x=document.getElementById('toast');if(!x){x=document.createElement('div');x.id='toast';x.style='position:fixed;right:20px;bottom:24px;background:#13235b;color:#fff;padding:11px 15px;border-radius:11px;font-size:12px;font-weight:700;z-index:100;box-shadow:0 12px 30px #0004';document.body.appendChild(x)}x.textContent=msg;x.style.opacity=1;clearTimeout(window.tt);window.tt=setTimeout(()=>x.style.opacity=0,1800);}
+function searchApp(q){if(q.trim().length>2)toast('Searching RAYAM for “'+q+'”');}
+function openGoal(){document.getElementById('modal').style.display='flex'}
+function closeModal(){document.getElementById('modal').style.display='none'}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+
+// v5.0 — lightweight live-feel interactions using existing RAYAM demo values.
+function refreshWealthPulse(){
+  const widget=document.querySelector('.live-widget');
+  const spark=widget?.querySelector('.live-spark');
+  if(!widget) return;
+  widget.classList.remove('pulse-refresh');
+  void widget.offsetWidth;
+  widget.classList.add('pulse-refresh');
+  const refresh=widget.querySelector('.live-refresh span');
+  if(refresh){const old=refresh.textContent;refresh.textContent='Pulse refreshed';setTimeout(()=>refresh.textContent=old,1200)}
+  toast('Wealth pulse refreshed');
+}
+function replayRAYAMMotion(){
+  document.querySelectorAll('.spark polyline,.wealth-wave .required,.wealth-wave .projected,.mini-bars i,.goal .bar i').forEach(el=>{
+    el.style.animation='none';
+    void el.offsetWidth;
+    el.style.animation='';
+  });
+}
+window.addEventListener('load',()=>setTimeout(replayRAYAMMotion,120));
+
+
+// v5.1 — balance-sheet micro-interactions
+document.querySelectorAll('.break-card').forEach(card=>{card.addEventListener('mouseenter',()=>card.style.zIndex='4');card.addEventListener('mouseleave',()=>card.style.zIndex='')});
+
+
+/* v5.2 Overview Insight interactions */
+(function(){
+  const root=document.getElementById('overviewInsightCommand');
+  if(!root) return;
+  const filters=[...root.querySelectorAll('[data-insight-filter]')];
+  const items=[...root.querySelectorAll('.insight-item')];
+  const empty=document.createElement('div');
+  empty.className='insight-empty';
+  empty.textContent='No signals in this view.';
+  root.querySelector('#overviewInsightQueue')?.appendChild(empty);
+  filters.forEach(btn=>btn.addEventListener('click',()=>{
+    const type=btn.dataset.insightFilter;
+    filters.forEach(x=>{const active=x===btn;x.classList.toggle('active',active);x.setAttribute('aria-selected',String(active));});
+    let visible=0;
+    items.forEach(item=>{const show=type==='all'||item.dataset.insightType===type;item.style.display=show?'block':'none';if(show)visible++;});
+    empty.style.display=visible?'none':'block';
+  }));
+  root.querySelectorAll('.insight-item').forEach(item=>item.addEventListener('click',()=>{
+    const type=item.dataset.insightType;
+    if(type==='attention' && typeof goto==='function') goto('insights');
+    else if(type==='momentum' && typeof goto==='function') goto('networth');
+    else if(type==='opportunity' && typeof goto==='function') goto('portfolio');
+  }));
+  root.querySelectorAll('.insight-item').forEach(item=>item.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();item.click();}}));
+  const open=root.querySelector('#openInsightPage');
+  if(open) open.addEventListener('click',()=>{if(typeof goto==='function')goto('insights');});
+})();
+
+</script>
+
+<style id="family-context-overrides">
+.content{padding-top:18px}.main>.household-context + .content{padding-top:18px}
+@media(max-width:760px){.content{padding-top:12px}.household-context + .content{padding-top:12px}}
+</style>
+</body>
+</html>
